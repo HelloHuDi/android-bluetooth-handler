@@ -71,7 +71,6 @@ class BluetoothConnector {
         } catch (e: NoSuchMethodException) {
             e.printStackTrace()
         }
-
         port = port++ % 30
         if (port == 0) {
             port = 1
@@ -84,7 +83,6 @@ class BluetoothConnector {
             } catch (e: InvocationTargetException) {
                 e.printStackTrace()
             }
-
             return try {
                 socket.connect()//发起连接
                 true
@@ -92,7 +90,6 @@ class BluetoothConnector {
                 BL.d("connectBtByChannel connect error :" + e)
                 false
             }
-
         }
         return false
     }

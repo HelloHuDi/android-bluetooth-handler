@@ -20,12 +20,14 @@ interface BleBoundProgressCallback {
 
     /**
      * update device bound state
+     *
      * @param bluetoothDevice maybe is null or isn't target device
      */
     fun actionBondStateChanged(bluetoothDevice: BluetoothDevice)
 
     /**
      * bluetooth status changed
+     *
      * @param extraState [android.bluetooth.BluetoothAdapter.EXTRA_STATE]
      * *
      * @param extraPreviousState [android.bluetooth.BluetoothAdapter.EXTRA_PREVIOUS_STATE]
