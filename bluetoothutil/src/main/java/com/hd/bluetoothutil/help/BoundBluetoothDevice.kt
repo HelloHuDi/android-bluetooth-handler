@@ -11,11 +11,11 @@ import com.hd.bluetoothutil.device.BluetoothDeviceEntity
  * Created by hd on 2017/9/1 .
  * bound bluetooth device
  */
-class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundStatusCallback?) {
+class BoundBluetoothDevice constructor(context: Context, private val callback: BleBoundStatusCallback?) {
 
-    val bluetoothAdapter = BluetoothSecurityCheck.newInstance(context.applicationContext).check(DeviceVersion.BLUETOOTH_2)
+    private val bluetoothAdapter = BluetoothSecurityCheck.newInstance(context.applicationContext).check(DeviceVersion.BLUETOOTH_2)
 
-    val boundMap = linkedMapOf<BluetoothDevice, Boolean>()
+    private val boundMap = linkedMapOf<BluetoothDevice, Boolean>()
 
     companion object {
         fun newInstance(context: Context, callback: BleBoundStatusCallback?) = BoundBluetoothDevice(context, callback)
@@ -26,14 +26,14 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
         val devices = bluetoothAdapter?.bondedDevices
         if (devices != null && devices.isNotEmpty()) {
             for (boundDevice in devices) {
-                if (!entity.mac.isNullOrEmpty()) {
-                    if (boundDevice.address == entity.mac && boundDevice.name == entity.name) {
+                if (!entity.macAddress.isNullOrEmpty()) {
+                    if (boundDevice.address == entity.macAddress && boundDevice.name == entity.deviceName) {
                         boundMap.put(boundDevice, true)
                         if (notNeedCallback) callback?.boundStatus(boundMap)
                         return true
                     }
                 } else {
-                    if (!entity.name.isNullOrEmpty() && boundDevice.name == entity.name) {
+                    if (!entity.deviceName.isNullOrEmpty() && boundDevice.name == entity.deviceName) {
                         boundMap.put(boundDevice, true)
                         if (notNeedCallback) callback?.boundStatus(boundMap)
                         return true

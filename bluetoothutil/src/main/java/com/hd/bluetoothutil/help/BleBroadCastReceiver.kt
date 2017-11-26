@@ -27,19 +27,17 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         val action = intent.action
         val callback = callbackWeakReference!!.get()
         if (callback != null) {
-            if (BluetoothDevice.ACTION_FOUND == action) {
-                foundDevice(intent)
-            } else if (BluetoothDevice.ACTION_PAIRING_REQUEST == action) {
-                bondDevice(intent)
-            } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
-                callback.actionBondStateChanged(intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice)
-            } else if (BluetoothAdapter.ACTION_STATE_CHANGED == action) {
-                val extraState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
-                val extraPreviousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, -1)
-                BL.d("current bluetooth status :$extraState,previous bluetooth status :$extraPreviousState")
-                callback.actionStateChanged(extraState, extraPreviousState)
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) {
-                callback.actionDiscoveryFinished(searchComplete.get())
+            when (action) {
+                BluetoothDevice.ACTION_FOUND -> foundDevice(intent)
+                BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent)
+                BluetoothDevice.ACTION_BOND_STATE_CHANGED -> callback.actionBondStateChanged(intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice)
+                BluetoothAdapter.ACTION_STATE_CHANGED -> {
+                    val extraState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
+                    val extraPreviousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, -1)
+                    BL.d("current bluetooth status :$extraState,previous bluetooth status :$extraPreviousState")
+                    callback.actionStateChanged(extraState, extraPreviousState)
+                }
+                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> callback.actionDiscoveryFinished(searchComplete.get())
             }
         } else {
             BL.d("BleBoundProgressCallback is null")

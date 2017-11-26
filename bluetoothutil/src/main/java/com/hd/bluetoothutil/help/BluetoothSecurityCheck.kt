@@ -18,7 +18,7 @@ import com.hd.bluetoothutil.utils.BL
  * Created by hd on 2017/8/8 .
  * check device feature
  */
-class BluetoothSecurityCheck private constructor(var context: Context) {
+class BluetoothSecurityCheck private constructor(private var context: Context) {
 
     fun check(deviceVersion: DeviceVersion): BluetoothAdapter? {
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
@@ -33,11 +33,10 @@ class BluetoothSecurityCheck private constructor(var context: Context) {
     }
 
     private fun getBluetoothAdapter(deviceVersion: DeviceVersion, bluetoothManager: BluetoothManager?): BluetoothAdapter? {
-        val mBluetoothAdapter: BluetoothAdapter?
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2 && bluetoothManager != null) {
-            mBluetoothAdapter = bluetoothManager.adapter
+        val mBluetoothAdapter: BluetoothAdapter? = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2 && bluetoothManager != null) {
+            bluetoothManager.adapter
         } else {
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            BluetoothAdapter.getDefaultAdapter()
         }
         if (mBluetoothAdapter != null) {
             if (checkFeature(deviceVersion, mBluetoothAdapter))
@@ -56,10 +55,10 @@ class BluetoothSecurityCheck private constructor(var context: Context) {
             SystemClock.sleep(1000)
         }
         if (enable) {
-            if (deviceVersion === DeviceVersion.BLUETOOTH_4) {
-                return checkBle()
+            return if (deviceVersion === DeviceVersion.BLUETOOTH_4) {
+                checkBle()
             } else {
-                return true
+                true
             }
         } else {
             showToast(R.string.open_ble_error)
