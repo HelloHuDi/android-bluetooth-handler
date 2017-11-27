@@ -21,21 +21,21 @@ class BoundBluetoothDevice constructor(context: Context, private val callback: B
         fun newInstance(context: Context, callback: BleBoundStatusCallback?) = BoundBluetoothDevice(context, callback)
     }
 
-    fun queryBoundStatus(entity: BluetoothDeviceEntity, notNeedCallback: Boolean = true): Boolean {
+    fun queryBoundStatus(entity: BluetoothDeviceEntity, needCallback: Boolean = true): Boolean {
         if (entity.version == DeviceVersion.BLUETOOTH_4) return false
         val devices = bluetoothAdapter?.bondedDevices
         if (devices != null && devices.isNotEmpty()) {
             for (boundDevice in devices) {
                 if (!entity.macAddress.isNullOrEmpty()) {
-                    if (boundDevice.address == entity.macAddress && boundDevice.name == entity.deviceName) {
+                    if (boundDevice.name == entity.deviceName) {
                         boundMap.put(boundDevice, true)
-                        if (notNeedCallback) callback?.boundStatus(boundMap)
+                        if (needCallback) callback?.boundStatus(boundMap)
                         return true
                     }
                 } else {
                     if (!entity.deviceName.isNullOrEmpty() && boundDevice.name == entity.deviceName) {
                         boundMap.put(boundDevice, true)
-                        if (notNeedCallback) callback?.boundStatus(boundMap)
+                        if (needCallback) callback?.boundStatus(boundMap)
                         return true
                     }
                 }

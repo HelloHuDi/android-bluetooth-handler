@@ -8,6 +8,7 @@ import java.util.*
  * 参考：https://www.bluetooth.com/zh-cn/specifications/assigned-numbers/service-discovery
  */
 object GattAttributeResolver {
+//    val SPP_UUID="00001101-0000-1000-8000-00805F9B34FB"
     val BASE_GUID = "00000000-0000-1000-8000-00805f9b34fb"
     val SERVICE_DISCOVERY_PROTOCOL_SDP = "00000001-0000-1000-8000-00805f9b34fb"
     val USER_DATAGRAM_PROTOCOL_UDP = "00000002-0000-1000-8000-00805f9b34fb"

@@ -6,7 +6,9 @@ package com.hd.bluetoothutil.callback
 
 interface MeasureCallback {
 
-    fun connect()
+    fun startConnect()
+
+    fun connectComplete()
 
     fun disconnect()
 

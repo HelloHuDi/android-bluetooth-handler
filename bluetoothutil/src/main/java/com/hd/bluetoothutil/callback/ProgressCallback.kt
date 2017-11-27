@@ -18,9 +18,9 @@ interface ProgressCallback {
     fun searchStatus(success: Boolean)
 
     /**
-     * start connect bluetooth device
+     * start connect bluetooth device ,it may be called many times at connect again
      */
-    fun connect()
+    fun startConnect()
 
     /**
      * provide status in connecting bluetooth device

@@ -30,7 +30,8 @@ class BleBroadCastReceiver : BroadcastReceiver() {
             when (action) {
                 BluetoothDevice.ACTION_FOUND -> foundDevice(intent)
                 BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent)
-                BluetoothDevice.ACTION_BOND_STATE_CHANGED -> callback.actionBondStateChanged(intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice)
+                BluetoothDevice.ACTION_BOND_STATE_CHANGED ->
+                    callback.actionBondStateChanged(intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice)
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
                     val extraState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
                     val extraPreviousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, -1)
@@ -78,18 +79,17 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
         if (device != null && device.name != null && device.name == callbackWeakReference!!.get()?.deviceName) {
             searchComplete.set(true)
-           BL.d("found target device :" + device.name + "=" + searchComplete)
+            BL.d("found target device :" + device.name + "=" + searchComplete)
             if (BluetoothDevice.BOND_NONE == device.bondState) {
-                var creatSuccess: Boolean
+                var bondSuccess: Boolean
                 try {
-                    creatSuccess = ClsUtils.createBond(device.javaClass, device)
-                   BL.d("start bond device 1：" + creatSuccess)
+                    bondSuccess = ClsUtils.createBond(device.javaClass, device)
+                    BL.d("start bond device 1：" + bondSuccess)
                 } catch (e: Exception) {
-                    creatSuccess = false
+                    bondSuccess = false
                 }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !creatSuccess) {
-                   BL.d("start bond device 2")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !bondSuccess) {
+                    BL.d("start bond device 2")
                     device.createBond()
                 }
             } else {
