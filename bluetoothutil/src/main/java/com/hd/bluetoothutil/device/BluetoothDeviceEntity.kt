@@ -13,4 +13,4 @@ import java.util.*
  *@param version bluetooth version
  */
 data class BluetoothDeviceEntity(var deviceName: String? = null,var macAddress: String? = null,
-                                 var pin: String? = "1234",var targetCharacteristicUuid: UUID ,var version:DeviceVersion=DeviceVersion.BLUETOOTH_2)
+                                 var pin: String? = "1234",var targetCharacteristicUuid: UUID?=null ,var version:DeviceVersion=DeviceVersion.BLUETOOTH_2)

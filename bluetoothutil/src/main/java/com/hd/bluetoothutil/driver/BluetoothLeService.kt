@@ -10,7 +10,7 @@ import com.hd.bluetoothutil.utils.BL
 import java.util.*
 
 /**
- * Created by hd on 2017/5/24 0008.
+ * Created by hd on 2017/11/24 0008.
  *
  *
  * 蓝牙4.0服务
@@ -123,13 +123,13 @@ class BluetoothLeService : Service() {
                 BluetoothGattCharacteristic.FORMAT_UINT8
             }
             val heartRate = characteristic.getIntValue(format, 1)!!
-            BL.d("结果：" + heartRate)
+            BL.d("result ：" + heartRate)
             intent.putExtra(EXTRA_DATA, intToBytes(heartRate))
             sendBroadcast(intent)
         } else {
             // For all other profiles, writes the data formatted in HEX.
             val data = characteristic.value
-            BL.d("接收到蓝牙结果：" + Arrays.toString(data))
+            BL.d("receive bluetooth result ：" + Arrays.toString(data))
             if (data != null && data.isNotEmpty()) {
                 intent.putExtra(EXTRA_DATA, data)
                 sendBroadcast(intent)
