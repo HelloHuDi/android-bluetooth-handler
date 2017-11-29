@@ -26,7 +26,7 @@ class BluetoothLeService : Service() {
 
     //public final static UUID UUID_HEART_RATE_MEASUREMENT =
     // UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
-    // Implements callback methods for GATT events that the app cares about.  For example,
+    // Implements progressCallback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private val mGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
@@ -102,7 +102,8 @@ class BluetoothLeService : Service() {
             sendBroadcast(intent)
             return
         }
-        BL.d("get data from ble :" + Arrays.toString(characteristic.value) + ",BluetoothGattCharacteristic name " + GattAttributeResolver.getAttributeName(characteristic.uuid.toString() + "", "unknown uuid"))
+        BL.d("get data from ble :" + Arrays.toString(characteristic.value) + ",BluetoothGattCharacteristic name " //
+                + GattAttributeResolver.getAttributeName(characteristic.uuid.toString() + "", "unknown uuid"))
         if (UUID_CHARACTER_RECEIVE == characteristic.uuid) {
             val data = characteristic.value
             for (b in data) {
@@ -117,7 +118,7 @@ class BluetoothLeService : Service() {
         } else if (UUID_HEART_RATE_MEASUREMENT == characteristic.uuid) {
             // 这是心率测量配置文件。
             val flag = characteristic.properties
-            val format  = if (flag and 0x01 != 0) {
+            val format = if (flag and 0x01 != 0) {
                 BluetoothGattCharacteristic.FORMAT_UINT16
             } else {
                 BluetoothGattCharacteristic.FORMAT_UINT8
@@ -175,7 +176,7 @@ class BluetoothLeService : Service() {
      * @return Return true if the connection is initiated successfully. The connection result
      * is reported asynchronously through the
      * `BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)`
-     * callback.
+     * progressCallback.
      */
     fun connect(address: String?): Boolean {
         if (mBluetoothAdapter == null || address == null) {
@@ -233,7 +234,7 @@ class BluetoothLeService : Service() {
      * Disconnects an existing connection or cancel a pending connection. The disconnection result
      * is reported asynchronously through the
      * `BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)`
-     * callback.
+     * progressCallback.
      */
     fun disconnect() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
@@ -258,7 +259,7 @@ class BluetoothLeService : Service() {
     /**
      * Request a read on a given `BluetoothGattCharacteristic`. The read result is reported
      * asynchronously through the `BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)`
-     * callback.
+     * progressCallback.
      *
      * @param characteristic The characteristic to read from.
      */
@@ -267,7 +268,7 @@ class BluetoothLeService : Service() {
             BL.d("BluetoothAdapter not initialized")
             return
         }
-        BL.d("开始读取：")
+        BL.d("start read")
         mBluetoothGatt!!.readCharacteristic(characteristic)
     }
 
@@ -276,7 +277,7 @@ class BluetoothLeService : Service() {
             BL.d("BluetoothAdapter not initialized")
             return
         }
-        BL.d("开始写入")
+        BL.d("start write")
         mBluetoothGatt!!.writeCharacteristic(characteristic)
     }
 
@@ -339,11 +340,9 @@ class BluetoothLeService : Service() {
         /**
          * 蓝牙心率解析uuid
          */
-        val UUID_HEART_RATE_MEASUREMENT = UUID.fromString(GattAttributeResolver.HEART_RATE_MEASUREMENT)
-        val UUID_SERVICE_DATA = UUID.fromString("49535343-fe7d-4ae5-8fa9-9fafd205e455")
-        val UUID_CHARACTER_RECEIVE = UUID.fromString("49535343-1e4d-4bd9-ba61-23c647249616")
-        val UUID_MODIFY_BT_NAME = UUID.fromString("00005343-0000-1000-8000-00805F9B34FB")
-        val UUID_CLIENT_CHARACTER_CONFIG = UUID.fromString(GattAttributeResolver.CLIENT_CHARACTERISTIC_CONFIG)
+        val UUID_HEART_RATE_MEASUREMENT = UUID.fromString(GattAttributeResolver.HEART_RATE_MEASUREMENT)!!
+        val UUID_CHARACTER_RECEIVE = UUID.fromString(GattAttributeResolver.CHARACTER_RECEIVE)!!
+        val UUID_CLIENT_CHARACTER_CONFIG = UUID.fromString(GattAttributeResolver.CLIENT_CHARACTERISTIC_CONFIG)!!
         private val TAG = BluetoothLeService::class.java.simpleName
     }
 }

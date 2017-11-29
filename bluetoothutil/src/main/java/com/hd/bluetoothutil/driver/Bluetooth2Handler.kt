@@ -7,7 +7,7 @@ import android.content.Context
 import android.os.SystemClock
 import com.hd.bluetoothutil.callback.BleBoundProgressCallback
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
-import com.hd.bluetoothutil.callback.MeasureBle2Callback
+import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.device.BluetoothDeviceEntity
 import com.hd.bluetoothutil.help.BleBroadCastReceiver
@@ -25,7 +25,7 @@ import java.util.*
  *
  */
 class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
-                        bluetoothAdapter: BluetoothAdapter, val callback: MeasureBle2Callback)
+                        bluetoothAdapter: BluetoothAdapter, val callback: MeasureBle2ProgressCallback)
     : BluetoothHandler(context, entity, bluetoothAdapter, callback), BleBoundProgressCallback {
 
     private var inputStream: InputStream? = null
@@ -46,13 +46,13 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     }
 
     private fun searchDevice() {
-        progressCallback?.startSearch()
+        callback.startSearch()
         BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
             override fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
                 for ((bluetoothDevice, boundStatus) in boundMap) {
                     if (boundStatus) {
                         BL.d("device status is binding , start connect and measure")
-                        progressCallback?.searchStatus(true)
+                        callback.searchStatus(true)
                         cancelSearch()
                         connectDevice(bluetoothDevice)
                     } else {
@@ -107,10 +107,10 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     /** set the count of checks for the binding state of the same device*/
     private var checkCount = 3
 
-    private fun checkBluetoothBondStatus(device: BluetoothDevice?) {
-        if (device != null && device.name == deviceName) {
+    private fun checkBluetoothBondStatus(device: BluetoothDevice) {
+        if (device.name == deviceName) {
             BL.d("device bond state changed :" + device.bondState)
-            progressCallback?.searchStatus(true)
+            callback.searchStatus(true)
             when (device.bondState) {
                 BluetoothDevice.BOND_BONDED -> startConnect(device)
                 BluetoothDevice.BOND_BONDING -> {
@@ -141,7 +141,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     }
 
     override fun actionDiscoveryFinished(searchComplete: Boolean) {
-        progressCallback?.searchStatus(searchComplete)
+        callback.searchStatus(searchComplete)
     }
 
     private val default_connect_again_time = 5
@@ -166,18 +166,16 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             }
             if (bluetoothSocket == null) {
                 BL.d("connect error ,the bluetoothSocket is null ")
-                progressCallback?.failed()
+                connectAgain()
                 return
             }
-            progressCallback?.startConnect()
             callback.startConnect()
             if (!BluetoothConnector.newInstance().connectSocket(device, bluetoothSocket!!)) {
                 BL.d("connect again time ：$connect_again_time=$status")
                 connectAgain()
                 return
             } else {
-                progressCallback?.connectStatus(true)
-                callback.connectComplete()
+               callback.connectStatus(true)
             }
             try {
                 inputStream = bluetoothSocket!!.inputStream
@@ -189,7 +187,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             } catch (e: IOException) {
                 BL.d("bluetoothSocket outputStream error :" + e)
             }
-            progressCallback?.startRead()
+            callback.startRead()
             connect_again_time = default_connect_again_time
             while (status === BleMeasureStatus.RUNNING) {
                 if (reading()) return
@@ -197,15 +195,12 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         }
 
         private fun reading(): Boolean {
-            BL.d("reading 1 ：" + status)
-            progressCallback?.reading()
             if (outputStream != null && inputStream != null) {
                 try {
                     callback.write(outputStream!!)
                 } catch (ignored: Exception) {
                     BL.d("write data error ：" + ignored)
                 }
-                BL.d("reading 2 ：" + status)
                 val len: Int
                 try {
                     len = inputStream!!.read(byteBuffer.array())
@@ -214,11 +209,10 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                     connectAgain()
                     return true
                 }
-                BL.d("reading 3 ：$status==$len")
                 if (len > 0) {
                     val result = ByteArray(len)
                     byteBuffer.get(result, 0, len)
-                    callback.read(result, outputStream!!)
+                    callback.reading(result)
                 }
                 byteBuffer.clear()
                 return false
@@ -228,12 +222,11 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             return true
         }
 
-        private fun error(e: Exception) {
+        private fun error(e: Exception?=null) {
             BL.d("bluetooth handler2 error :" + e)
             stopMeasure()
             callback.disconnect()
-            progressCallback?.disconnect()
-            progressCallback?.failed()
+            callback.failed()
         }
 
         private fun connectAgain() {
@@ -243,7 +236,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 SystemClock.sleep(200)
                 run()
             } else {
-                progressCallback?.connectStatus(false)
+                callback.connectStatus(false)
                 error(IOException(Bluetooth2Handler::class.java.simpleName))
             }
         }

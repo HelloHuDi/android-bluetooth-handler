@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 
 /**
  * Created by hd on 2017/8/8 .
- * bluetooth device bound progress callback
+ * bluetooth device bound progress progressCallback
  */
 interface BleBoundProgressCallback {
 

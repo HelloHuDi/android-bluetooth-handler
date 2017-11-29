@@ -9,9 +9,8 @@ import com.hd.bluetoothutil.driver.BluetoothLeService
  *
  */
 
-interface MeasureBle4Callback : MeasureCallback {
+interface MeasureBle4ProgressCallback :MeasureProgressCallback{
 
     fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic, bluetoothLeService: BluetoothLeService)
 
-    fun read(data: ByteArray)
 }

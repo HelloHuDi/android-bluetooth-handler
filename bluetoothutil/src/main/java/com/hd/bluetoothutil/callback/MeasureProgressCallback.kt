@@ -4,7 +4,7 @@ package com.hd.bluetoothutil.callback
  * Created by hd on 2017/6/10.
  * provide measuring progress
  */
-interface ProgressCallback {
+interface MeasureProgressCallback {
 
     /**
      * start search bluetooth device
@@ -34,23 +34,18 @@ interface ProgressCallback {
     fun startRead()
 
     /**
-     * reading data from bluetooth device，will be called n times
+     * reading data from bluetooth device，be called multiple times
      */
-    fun reading()
-
-    /**
-     * measure complete
-     */
-    fun complete()
-
-    /**
-     * measure failed
-     */
-    fun failed()
+    fun reading(data: ByteArray)
 
     /**
      * disconnect bluetooth device
      */
     fun disconnect()
+
+    /**
+     * unknown errors in the measurement process
+     */
+    fun failed(string: String="测量失败")
 
 }

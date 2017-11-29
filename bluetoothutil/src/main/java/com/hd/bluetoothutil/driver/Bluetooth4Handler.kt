@@ -12,7 +12,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.SystemClock
 import android.support.annotation.RequiresApi
-import com.hd.bluetoothutil.callback.MeasureBle4Callback
+import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.device.BluetoothDeviceEntity
 import com.hd.bluetoothutil.utils.BL
@@ -25,23 +25,24 @@ import java.util.*
  *
  */
 class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
-                        bluetoothAdapter: BluetoothAdapter, val callback: MeasureBle4Callback)
+                        bluetoothAdapter: BluetoothAdapter, val callback: MeasureBle4ProgressCallback)
     : BluetoothHandler(context, entity, bluetoothAdapter, callback) {
 
-    private var mTargetDevice: BluetoothDevice? = null
+    private var targetDevice: BluetoothDevice? = null
     private var mbluetoothLeService: BluetoothLeService? = null
     private var mBluetoothLeScanner: BluetoothLeScanner? = null
 
     override fun start() {
         context.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
         if (mbluetoothLeService != null) {
-            val connectStatus = mbluetoothLeService?.connect(mTargetDevice?.address)
-            progressCallback?.connectStatus(connectStatus!!)
+            val connectStatus=mbluetoothLeService!!.connect(targetDevice?.address)
+            callback.connectStatus(connectStatus)
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mBluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
             }
             BL.d("startScan current device sdk :" + Build.VERSION.SDK_INT + "==" + mBluetoothLeScanner)
+            callback.startSearch()
             startScan()
         }
     }
@@ -64,14 +65,13 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
     }
 
     private fun startScan() {
-        progressCallback?.startSearch()
         Handler(context.mainLooper).postDelayed({
             BL.d("stop scan ble after 30000 millisecond")
             stopScan()
         }, 30000)
         BL.d("startScan current device sdk :" + Build.VERSION.SDK_INT + "==" + mBluetoothLeScanner)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBluetoothLeScanner?.startScan(mScanCallback)
+            mBluetoothLeScanner!!.startScan(mScanCallback)
         } else {
             bluetoothAdapter.startLeScan(leScanCallback)
         }
@@ -110,7 +110,7 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                 AGAIN_TIME--
             } else {
                 stopScan()
-                progressCallback?.searchStatus(false)
+                callback.searchStatus(false)
             }
         }
     }
@@ -119,9 +119,9 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
         val currentDeviceName = targetDevice.name
         BL.d("found current device name is ：$currentDeviceName  ,the target device name ：${entity.deviceName}")
         if (currentDeviceName != null && currentDeviceName == entity.deviceName) {
-            progressCallback?.searchStatus(true)
+            callback.searchStatus(true)
             stopScan()
-            mTargetDevice = targetDevice
+            this.targetDevice = targetDevice
             openService()
         }
     }
@@ -132,8 +132,8 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
 
     private fun openService() {
         if (mbluetoothLeService != null) {
-            val connectStatus = mbluetoothLeService!!.connect(mTargetDevice!!.address)
-            progressCallback?.connectStatus(connectStatus)
+            val connectStatus = mbluetoothLeService!!.connect(targetDevice!!.address)
+            callback.connectStatus(connectStatus)
         } else {
             val gattServiceIntent = Intent(context, BluetoothLeService::class.java)
             context.bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
@@ -152,12 +152,12 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                 return
             }
             //Automatically connects to the device upon successful start-up initialization.
-            val connectStatus = mbluetoothLeService!!.connect(mTargetDevice!!.address)
+            val connectStatus = mbluetoothLeService!!.connect(targetDevice!!.address)
             BL.d("start connect service ,current device type :" + //
-                    BluetoothClassResolver.resolveDeviceClass(mTargetDevice!!.bluetoothClass.deviceClass)//
+                    BluetoothClassResolver.resolveDeviceClass(targetDevice!!.bluetoothClass.deviceClass)//
                     + " , it's MajorDeviceClass :" + //
-                    BluetoothClassResolver.resolveMajorDeviceClass(mTargetDevice!!.bluetoothClass.majorDeviceClass))
-            progressCallback?.connectStatus(connectStatus)
+                    BluetoothClassResolver.resolveMajorDeviceClass(targetDevice!!.bluetoothClass.majorDeviceClass))
+            callback.connectStatus(connectStatus)
         }
 
         override fun onServiceDisconnected(componentName: ComponentName) {
@@ -184,25 +184,22 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                 BL.d("start connect ")
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED == action) {
                 if (status === BleMeasureStatus.RUNNING && mbluetoothLeService != null) {
-                    mbluetoothLeService!!.connect(mTargetDevice!!.address)//connect again
+                   val connectStatus= mbluetoothLeService!!.connect(targetDevice!!.address)//connect again
                     BL.d("connect again")
-                    progressCallback?.startConnect()
+                    callback.connectStatus(connectStatus)
                 } else {
                     BL.d("device disconnect ")
                     callback.disconnect()
-                    progressCallback?.disconnect()
                     mbluetoothLeService?.disconnect()
                 }
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED == action) {
                 setNotification()
-                progressCallback?.startRead()
-                progressCallback?.startRead()
+                callback.startRead()
                 BL.d("service discovered and set notification")
             } else {
                 val readByte = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)
                 BL.d("data be update and start receive :" + HexDump.toHexString(readByte) + "==" + Arrays.toString(readByte))
-                callback.read(readByte)
-                progressCallback?.reading()
+                callback.reading(readByte)
             }
         }
     }
@@ -238,7 +235,6 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                 + "==" + entity.targetCharacteristicUuid + "==" + bluetoothGattCharacteristic.uuid)
         val hasTarget = entity.targetCharacteristicUuid  != null && bluetoothGattCharacteristic.uuid == entity.targetCharacteristicUuid
         if (entity.targetCharacteristicUuid != null) {
-            BL.d("set listener ：" + hasTarget)
             if (hasTarget) {
                 mbluetoothLeService!!.setCharacteristicNotification(bluetoothGattCharacteristic, true)
                 setNotifition[0] = true
@@ -246,20 +242,24 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                 BL.d("do not set notification :" + bluetoothGattCharacteristic.uuid)
             }
         } else {
-            val charaProp = bluetoothGattCharacteristic.properties
-            if (charaProp or BluetoothGattCharacteristic.PROPERTY_READ > 0) {
-                // If there is an active notification on a characteristic, clear
-                // it first so it doesn't update the data field on the user interface.
-                if (mNotifyCharacteristic[0] != null) {
-                    mbluetoothLeService!!.setCharacteristicNotification(mNotifyCharacteristic[0]!!, false)
-                    mNotifyCharacteristic[0] = null
-                }
-                mbluetoothLeService!!.readCharacteristic(bluetoothGattCharacteristic)
+            notifitionAll(bluetoothGattCharacteristic, mNotifyCharacteristic)
+        }
+    }
+
+    private fun notifitionAll(bluetoothGattCharacteristic: BluetoothGattCharacteristic, mNotifyCharacteristic: Array<BluetoothGattCharacteristic?>) {
+        val charaProp = bluetoothGattCharacteristic.properties
+        if (charaProp or BluetoothGattCharacteristic.PROPERTY_READ > 0) {
+            // If there is an active notification on a characteristic, clear
+            // it first so it doesn't update the data field on the user interface.
+            if (mNotifyCharacteristic[0] != null) {
+                mbluetoothLeService!!.setCharacteristicNotification(mNotifyCharacteristic[0]!!, false)
+                mNotifyCharacteristic[0] = null
             }
-            if (charaProp or BluetoothGattCharacteristic.PROPERTY_NOTIFY > 0) {
-                mNotifyCharacteristic[0] = bluetoothGattCharacteristic
-                mbluetoothLeService!!.setCharacteristicNotification(bluetoothGattCharacteristic, true)
-            }
+            mbluetoothLeService!!.readCharacteristic(bluetoothGattCharacteristic)
+        }
+        if (charaProp or BluetoothGattCharacteristic.PROPERTY_NOTIFY > 0) {
+            mNotifyCharacteristic[0] = bluetoothGattCharacteristic
+            mbluetoothLeService!!.setCharacteristicNotification(bluetoothGattCharacteristic, true)
         }
     }
 
