@@ -54,8 +54,10 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
                 devices.filter { it.name==entity.deviceName && it.address==entity.macAddress}
                         .forEach { boundMap.put(it, it.bondState==BluetoothDevice.BOND_BONDED) }
             }
-            callback?.boundStatus(boundMap)
-            return true
+            if(boundMap.size>0) {
+                callback?.boundStatus(boundMap)
+                return true
+            }
         }
         return false
     }
