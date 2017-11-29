@@ -37,26 +37,24 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
         entities.forEach { boundDevice(it) }
     }
 
+    private
     /** query single device bound status*/
     fun queryBoundStatus(entity: BluetoothDeviceEntity): Boolean {
-        boundMap.clear()
-        sameNameDeviceList.clear()
+        reset()
         if (entity.version == DeviceVersion.BLUETOOTH_4) return true
         val devices = bluetoothAdapter?.bondedDevices
         if (devices != null && devices.isNotEmpty()) {
-            devices.filter { it.name == entity.deviceName }.forEach { sameNameDeviceList.add(it) }
-            if (sameNameDeviceList.size > 0) {
-                return if (entity.macAddress.isNullOrEmpty()) {
-                    sameNameDeviceList.forEach { boundMap.put(it, true) }
-                    callback?.boundStatus(boundMap)
-                    true
-                } else {
-                    sameNameDeviceList.filter { it.address == entity.macAddress }.forEach { boundMap.put(it, true) }
-                    if (boundMap.size > 0) callback?.boundStatus(boundMap)
-                    boundMap.size > 0
-                }
+            val nullName=entity.deviceName.isNullOrEmpty()
+            val nullAddress=entity.macAddress.isNullOrEmpty()
+            if(nullName && !nullAddress){
+                devices.filter { it.address==entity.macAddress}.forEach { boundMap.put(it, true) }
+            }else if(!nullName && nullAddress){
+                devices.filter { it.name==entity.deviceName}.forEach { boundMap.put(it, true) }
+            }else if(!nullName && !nullAddress){
+                devices.filter { it.name==entity.deviceName && it.address==entity.macAddress}.forEach { boundMap.put(it, true) }
             }
-            return false
+            callback?.boundStatus(boundMap)
+            return true
         }
         return false
     }
@@ -64,8 +62,7 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
     /** bound single device */
     fun boundDevice(entity: BluetoothDeviceEntity) {
         if (entity.version == DeviceVersion.BLUETOOTH_4) return
-        boundMap.clear()
-        sameNameDeviceList.clear()
+        reset()
         BleBroadCastReceiver.newInstance(object : BleBoundProgressCallback {
 
             override val pin: String? get() = entity.pin
@@ -97,5 +94,10 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
                 BleBroadCastReceiver.clear()
             }
         })
+    }
+
+    private fun reset() {
+        boundMap.clear()
+        sameNameDeviceList.clear()
     }
 }

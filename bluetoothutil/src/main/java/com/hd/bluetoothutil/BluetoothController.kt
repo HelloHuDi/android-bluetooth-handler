@@ -1,4 +1,4 @@
-package com.hd.bluetoothutil.method
+package com.hd.bluetoothutil
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,7 +15,7 @@ import com.hd.bluetoothutil.utils.BL
 
 /**
  * Created by hd on 2017/5/24.
- * control bluetooth device measure
+ * control bluetooth handler
  */
 class BluetoothController {
 
@@ -38,7 +38,7 @@ class BluetoothController {
                 bluetoothHandler = Bluetooth4Handler(context, entity, mBluetoothAdapter, callback)
             }
         } else {
-            TODO()
+            callback.failed()
         }
     }
 
