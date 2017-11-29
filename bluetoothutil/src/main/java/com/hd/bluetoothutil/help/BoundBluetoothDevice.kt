@@ -47,11 +47,12 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
             val nullName=entity.deviceName.isNullOrEmpty()
             val nullAddress=entity.macAddress.isNullOrEmpty()
             if(nullName && !nullAddress){
-                devices.filter { it.address==entity.macAddress}.forEach { boundMap.put(it, true) }
+                devices.filter { it.address==entity.macAddress}.forEach { boundMap.put(it, it.bondState==BluetoothDevice.BOND_BONDED) }
             }else if(!nullName && nullAddress){
-                devices.filter { it.name==entity.deviceName}.forEach { boundMap.put(it, true) }
+                devices.filter { it.name==entity.deviceName}.forEach { boundMap.put(it, it.bondState==BluetoothDevice.BOND_BONDED) }
             }else if(!nullName && !nullAddress){
-                devices.filter { it.name==entity.deviceName && it.address==entity.macAddress}.forEach { boundMap.put(it, true) }
+                devices.filter { it.name==entity.deviceName && it.address==entity.macAddress}
+                        .forEach { boundMap.put(it, it.bondState==BluetoothDevice.BOND_BONDED) }
             }
             callback?.boundStatus(boundMap)
             return true
