@@ -38,23 +38,23 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
     }
 
     private
-    /** query single device bound status*/
+            /** query single device bound status*/
     fun queryBoundStatus(entity: BluetoothDeviceEntity): Boolean {
         reset()
         if (entity.version == DeviceVersion.BLUETOOTH_4) return true
         val devices = bluetoothAdapter?.bondedDevices
         if (devices != null && devices.isNotEmpty()) {
-            val nullName=entity.deviceName.isNullOrEmpty()
-            val nullAddress=entity.macAddress.isNullOrEmpty()
-            if(nullName && !nullAddress){
-                devices.filter { it.address==entity.macAddress}.forEach { boundMap.put(it, it.bondState==BluetoothDevice.BOND_BONDED) }
-            }else if(!nullName && nullAddress){
-                devices.filter { it.name==entity.deviceName}.forEach { boundMap.put(it, it.bondState==BluetoothDevice.BOND_BONDED) }
-            }else if(!nullName && !nullAddress){
-                devices.filter { it.name==entity.deviceName && it.address==entity.macAddress}
-                        .forEach { boundMap.put(it, it.bondState==BluetoothDevice.BOND_BONDED) }
+            val nullName = entity.deviceName.isNullOrEmpty()
+            val nullAddress = entity.macAddress.isNullOrEmpty()
+            if (nullName && !nullAddress) {
+                devices.filter { it.address == entity.macAddress }.forEach { boundMap.put(it, it.bondState == BluetoothDevice.BOND_BONDED) }
+            } else if (!nullName && nullAddress) {
+                devices.filter { it.name == entity.deviceName }.forEach { boundMap.put(it, it.bondState == BluetoothDevice.BOND_BONDED) }
+            } else if (!nullName && !nullAddress) {
+                devices.filter { it.name == entity.deviceName && it.address == entity.macAddress }
+                        .forEach { boundMap.put(it, it.bondState == BluetoothDevice.BOND_BONDED) }
             }
-            if(boundMap.size>0) {
+            if (boundMap.size > 0) {
                 callback?.boundStatus(boundMap)
                 return true
             }
@@ -80,7 +80,7 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
                             boundMap.put(bluetoothDevice, true)
                             callback?.boundStatus(boundMap)
                         }
-                        else->BL.d("bound device status :"+bluetoothDevice.bondState)
+                        else -> BL.d("bound device status :" + bluetoothDevice.bondState)
                     }
                 }
             }
