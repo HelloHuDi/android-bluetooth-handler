@@ -4,6 +4,7 @@ import android.content.Context
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureProgressCallback
+import com.hd.bluetoothutil.callback.SecurityCheckCallback
 import com.hd.bluetoothutil.config.DeviceVersion
 import com.hd.bluetoothutil.device.BluetoothDeviceEntity
 import com.hd.bluetoothutil.driver.Bluetooth2Handler
@@ -22,22 +23,24 @@ class BluetoothController {
 
     private var entity: BluetoothDeviceEntity? = null
 
-    fun init(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback){
+    fun init(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback) {
         initBlueHandler(context, entity, callback)
         this.entity = entity
     }
 
     private fun initBlueHandler(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback) {
         val targetVersion = entity.version
-        val mBluetoothAdapter = BluetoothSecurityCheck.newInstance(context).check(targetVersion)
+        val mBluetoothAdapter = BluetoothSecurityCheck.newInstance(context, object : SecurityCheckCallback {
+            override fun securityHint(hint: String) {
+                callback.error(hint)
+            }
+        }).check(targetVersion)
         if (mBluetoothAdapter != null) {
             if (targetVersion === DeviceVersion.BLUETOOTH_2 && callback is MeasureBle2ProgressCallback) {
                 bluetoothHandler = Bluetooth2Handler(context, entity, mBluetoothAdapter, callback)
             } else if (targetVersion === DeviceVersion.BLUETOOTH_4 && callback is MeasureBle4ProgressCallback) {
                 bluetoothHandler = Bluetooth4Handler(context, entity, mBluetoothAdapter, callback)
             }
-        } else {
-            callback.failed()
         }
     }
 

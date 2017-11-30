@@ -37,8 +37,7 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
         entities.forEach { boundDevice(it) }
     }
 
-    private
-            /** query single device bound status*/
+    /** query single device bound status*/
     fun queryBoundStatus(entity: BluetoothDeviceEntity): Boolean {
         reset()
         if (entity.version == DeviceVersion.BLUETOOTH_4) return true

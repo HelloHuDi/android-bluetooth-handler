@@ -9,8 +9,8 @@ import android.os.Build
 import android.os.SystemClock
 import android.support.annotation.StringRes
 import android.widget.Toast
-
 import com.hd.bluetoothutil.R
+import com.hd.bluetoothutil.callback.SecurityCheckCallback
 import com.hd.bluetoothutil.config.DeviceVersion
 import com.hd.bluetoothutil.utils.BL
 
@@ -18,11 +18,11 @@ import com.hd.bluetoothutil.utils.BL
  * Created by hd on 2017/8/8 .
  * check device feature
  */
-class BluetoothSecurityCheck private constructor(private var context: Context) {
+class BluetoothSecurityCheck private constructor(private var context: Context,val callback: SecurityCheckCallback?) {
 
     fun check(deviceVersion: DeviceVersion): BluetoothAdapter? {
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
-            showToast(R.string.error_bluetooth_not_supported)
+            hint(R.string.error_bluetooth_not_supported)
             return null
         }
         var bluetoothManager: BluetoothManager? = null
@@ -43,7 +43,7 @@ class BluetoothSecurityCheck private constructor(private var context: Context) {
                 return mBluetoothAdapter
         } else {
             BL.e("current device without bluetooth module")
-            showToast(R.string.error_bluetooth_not_supported)
+            hint(R.string.error_bluetooth_not_supported)
         }
         return null
     }
@@ -61,7 +61,7 @@ class BluetoothSecurityCheck private constructor(private var context: Context) {
                 true
             }
         } else {
-            showToast(R.string.open_ble_error)
+            hint(R.string.open_ble_error)
         }
         return false
     }
@@ -72,25 +72,29 @@ class BluetoothSecurityCheck private constructor(private var context: Context) {
                 val permissionCheck1 = context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
                 val permissionCheck2 = context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 if (permissionCheck1 == -1 || permissionCheck2 == -1) {
-                    showToast(R.string.not_request_bluetooth_permission)
+                    hint(R.string.not_request_bluetooth_permission)
                     return false
                 }
             }
             return true
         } else {
-            showToast(R.string.ble_not_supported)
+            hint(R.string.ble_not_supported)
         }
         return false
     }
 
-    private fun showToast(@StringRes resId: Int) {
-        Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
+    private fun hint(@StringRes resId: Int) {
+        if(callback==null){
+            Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
+        }else{
+            callback.securityHint(context.resources.getString(resId))
+        }
     }
 
     companion object {
 
-        fun newInstance(context: Context): BluetoothSecurityCheck {
-            return BluetoothSecurityCheck(context)
+        fun newInstance(context: Context,callback: SecurityCheckCallback?=null): BluetoothSecurityCheck {
+            return BluetoothSecurityCheck(context,callback)
         }
     }
 }

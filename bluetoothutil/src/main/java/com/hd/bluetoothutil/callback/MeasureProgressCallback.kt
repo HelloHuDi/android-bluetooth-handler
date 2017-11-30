@@ -46,6 +46,6 @@ interface MeasureProgressCallback {
     /**
      * unknown errors in the measurement process
      */
-    fun failed(string: String="测量失败")
+    fun error(string: String="测量失败")
 
 }

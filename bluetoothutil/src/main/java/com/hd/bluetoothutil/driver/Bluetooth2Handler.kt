@@ -226,7 +226,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             BL.d("bluetooth handler2 error :" + e)
             stopMeasure()
             callback.disconnect()
-            callback.failed()
+            callback.error()
         }
 
         private fun connectAgain() {
