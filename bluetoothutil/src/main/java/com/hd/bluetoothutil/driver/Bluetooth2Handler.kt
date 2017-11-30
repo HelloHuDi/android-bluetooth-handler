@@ -47,7 +47,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
 
     private fun searchDevice() {
         callback.startSearch()
-        BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
+        val bound = BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
             override fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
                 for ((bluetoothDevice, boundStatus) in boundMap) {
                     if (boundStatus) {
@@ -56,13 +56,18 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                         cancelSearch()
                         connectDevice(bluetoothDevice)
                     } else {
-                        BleBroadCastReceiver.newInstance(this@Bluetooth2Handler)
-                        BL.d("start found target device")
-                        bluetoothAdapter.startDiscovery()
+                        startBound()
                     }
                 }
             }
         }).queryBoundStatus(entity)
+        if (!bound) startBound()
+    }
+
+    private fun startBound() {
+        BleBroadCastReceiver.newInstance(this@Bluetooth2Handler)
+        BL.d("start found target device")
+        bluetoothAdapter.startDiscovery()
     }
 
     private fun clear() {
@@ -175,7 +180,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 connectAgain()
                 return
             } else {
-               callback.connectStatus(true)
+                callback.connectStatus(true)
             }
             try {
                 inputStream = bluetoothSocket!!.inputStream
@@ -222,7 +227,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             return true
         }
 
-        private fun error(e: Exception?=null) {
+        private fun error(e: Exception? = null) {
             BL.d("bluetooth handler2 error :" + e)
             stopMeasure()
             callback.disconnect()
