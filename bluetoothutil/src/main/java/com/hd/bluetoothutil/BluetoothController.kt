@@ -1,5 +1,6 @@
 package com.hd.bluetoothutil
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
@@ -17,15 +18,27 @@ import com.hd.bluetoothutil.utils.BL
  * Created by hd on 2017/5/24.
  * control bluetooth handler
  */
-class BluetoothController {
+object BluetoothController {
 
+    @SuppressLint("StaticFieldLeak")
     private var bluetoothHandler: BluetoothHandler? = null
 
     private var entity: BluetoothDeviceEntity? = null
 
-    fun init(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback) {
-        initBlueHandler(context, entity, callback)
+    private var callback: MeasureProgressCallback?=null
+
+    private fun reset() {
+        bluetoothHandler = null
+        callback = null
+        entity=null
+    }
+
+    fun init(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback): BluetoothController {
+        reset()
+        initBlueHandler(context.applicationContext, entity, callback)
         this.entity = entity
+        this.callback=callback
+        return this@BluetoothController
     }
 
     private fun initBlueHandler(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback) {
@@ -55,5 +68,6 @@ class BluetoothController {
     fun stopMeasure() {
         BL.d("BluetoothController stop")
         bluetoothHandler?.stopMeasure()
+        reset()
     }
 }
