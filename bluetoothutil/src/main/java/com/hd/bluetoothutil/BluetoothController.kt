@@ -6,8 +6,8 @@ import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureProgressCallback
 import com.hd.bluetoothutil.callback.SecurityCheckCallback
+import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.config.DeviceVersion
-import com.hd.bluetoothutil.device.BluetoothDeviceEntity
 import com.hd.bluetoothutil.driver.Bluetooth2Handler
 import com.hd.bluetoothutil.driver.Bluetooth4Handler
 import com.hd.bluetoothutil.driver.BluetoothHandler

@@ -6,7 +6,7 @@ import android.content.Context
 import com.hd.bluetoothutil.callback.BleBoundProgressCallback
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.config.DeviceVersion
-import com.hd.bluetoothutil.device.BluetoothDeviceEntity
+import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.utils.BL
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean

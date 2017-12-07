@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import com.hd.bluetoothutil.callback.MeasureProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
-import com.hd.bluetoothutil.device.BluetoothDeviceEntity
+import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.utils.BL
 import java.util.*
 

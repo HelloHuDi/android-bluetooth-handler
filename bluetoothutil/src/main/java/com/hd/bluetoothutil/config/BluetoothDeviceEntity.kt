@@ -1,6 +1,6 @@
-package com.hd.bluetoothutil.device
+package com.hd.bluetoothutil.config
 
-import com.hd.bluetoothutil.config.DeviceVersion
+import java.io.Serializable
 import java.util.*
 
 
@@ -12,6 +12,6 @@ import java.util.*
  *@param targetCharacteristicUuid focus on assigned goals with the Characteristic [BluetoothGattCharacteristic] UUID [UUID]
  *@param version bluetooth version
  */
-data class BluetoothDeviceEntity(var deviceName: String? = null,var macAddress: String? = null,
-                                 var pin: String? = "1234",var targetCharacteristicUuid: UUID?=null ,
-                                 var version:DeviceVersion=DeviceVersion.BLUETOOTH_2)
+open class BluetoothDeviceEntity(var deviceName: String? = null, var macAddress: String? = null,
+                                 var pin: String? = "1234", var targetCharacteristicUuid: UUID?=null,
+                                 var version:DeviceVersion=DeviceVersion.BLUETOOTH_2) :Serializable

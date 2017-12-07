@@ -7,6 +7,6 @@ package com.hd.bluetoothutil.callback
  */
 interface SecurityCheckCallback {
 
-    /** hint security message */
+    /**hint that the security message is at a time when there is a problem */
     fun securityHint(hint: String)
 }

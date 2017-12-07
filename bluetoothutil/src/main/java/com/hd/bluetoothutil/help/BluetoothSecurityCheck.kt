@@ -12,8 +12,8 @@ import android.support.annotation.StringRes
 import android.widget.Toast
 import com.hd.bluetoothutil.R
 import com.hd.bluetoothutil.callback.SecurityCheckCallback
+import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.config.DeviceVersion
-import com.hd.bluetoothutil.device.BluetoothDeviceEntity
 import com.hd.bluetoothutil.utils.BL
 
 /**

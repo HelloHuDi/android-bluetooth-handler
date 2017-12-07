@@ -8,7 +8,7 @@ import android.os.SystemClock
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
-import com.hd.bluetoothutil.device.BluetoothDeviceEntity
+import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.help.BluetoothSecurityCheck
 import com.hd.bluetoothutil.help.BoundBluetoothDevice
 import com.hd.bluetoothutil.utils.BL

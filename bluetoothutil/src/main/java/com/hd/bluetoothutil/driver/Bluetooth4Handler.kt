@@ -14,7 +14,7 @@ import android.os.SystemClock
 import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
-import com.hd.bluetoothutil.device.BluetoothDeviceEntity
+import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.help.BluetoothSecurityCheck
 import com.hd.bluetoothutil.utils.BL
 import com.hd.bluetoothutil.utils.HexDump
@@ -26,7 +26,7 @@ import java.util.*
  *
  */
 class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
-                        bluetoothAdapter: BluetoothAdapter,callback: MeasureBle4ProgressCallback)
+                        bluetoothAdapter: BluetoothAdapter, callback: MeasureBle4ProgressCallback)
     : BluetoothHandler(context, entity, bluetoothAdapter, callback) {
 
     private var targetDevice: BluetoothDevice? = null

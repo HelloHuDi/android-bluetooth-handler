@@ -7,7 +7,7 @@ import android.util.Log
  *
  */
 object BL {
-    var allowLog = true
+    var allowLog = false
     private val TAG = "sihealBleLog"
 
     fun i(i: String) {
