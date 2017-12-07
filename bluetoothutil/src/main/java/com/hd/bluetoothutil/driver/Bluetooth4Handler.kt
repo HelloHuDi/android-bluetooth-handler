@@ -116,9 +116,8 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
     }
 
     private fun scanComplete(targetDevice: BluetoothDevice) {
-        val currentDeviceName = targetDevice.name
-        BL.d("found current device name is ：$currentDeviceName  ,the target device name ：${entity.deviceName}")
-        if (currentDeviceName != null && currentDeviceName == entity.deviceName) {
+        BL.d("found current device name is ：${targetDevice.name}  ,the target device name ：${entity.deviceName}")
+        if (checkSameDevice(targetDevice)) {
             callback.searchStatus(true)
             stopScan()
             this.targetDevice = targetDevice

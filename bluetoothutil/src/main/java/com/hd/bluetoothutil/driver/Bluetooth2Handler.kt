@@ -5,12 +5,10 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.SystemClock
-import com.hd.bluetoothutil.callback.BleBoundProgressCallback
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.device.BluetoothDeviceEntity
-import com.hd.bluetoothutil.help.BleBroadCastReceiver
 import com.hd.bluetoothutil.help.BoundBluetoothDevice
 import com.hd.bluetoothutil.utils.BL
 import java.io.IOException
@@ -26,7 +24,7 @@ import java.util.*
  */
 class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                         bluetoothAdapter: BluetoothAdapter, val callback: MeasureBle2ProgressCallback)
-    : BluetoothHandler(context, entity, bluetoothAdapter, callback), BleBoundProgressCallback {
+    : BluetoothHandler(context, entity, bluetoothAdapter, callback) {
 
     private var inputStream: InputStream? = null
     private var outputStream: OutputStream? = null
@@ -42,7 +40,6 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
 
     private fun cancelSearch() {
         if (bluetoothAdapter.isDiscovering) bluetoothAdapter.cancelDiscovery()
-        BleBroadCastReceiver.clear()
     }
 
     private fun searchDevice() {
@@ -65,7 +62,20 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     }
 
     private fun startBound() {
-        BleBroadCastReceiver.newInstance(this@Bluetooth2Handler)
+        var searchComplete = false
+        BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
+            override fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
+                for ((device, bound) in boundMap) {
+                    if (checkSameDevice(device) && bound && !searchComplete) {
+                        searchComplete = true
+                        cancelSearch()
+                        startConnect(device)
+                        break
+                    }
+                }
+                callback.searchStatus(searchComplete)
+            }
+        }).boundDevice(entity)
         BL.d("start found target device")
         bluetoothAdapter.startDiscovery()
     }
@@ -107,46 +117,6 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     private fun startConnect(device: BluetoothDevice) {
         cancelSearch()
         connectDevice(device)
-    }
-
-    /** set the count of checks for the binding state of the same device*/
-    private var checkCount = 3
-
-    private fun checkBluetoothBondStatus(device: BluetoothDevice) {
-        if (device.name == deviceName) {
-            BL.d("device bond state changed :" + device.bondState)
-            callback.searchStatus(true)
-            when (device.bondState) {
-                BluetoothDevice.BOND_BONDED -> startConnect(device)
-                BluetoothDevice.BOND_BONDING -> {
-                    if (checkCount > 0) {
-                        checkCount--
-                        SystemClock.sleep(100)
-                        checkBluetoothBondStatus(device)
-                    }
-                }
-            }
-        }
-    }
-
-    override val pin: String? get() = entity.pin
-
-    override val deviceName: String? get() = entity.deviceName
-
-    override fun actionBondStateChanged(bluetoothDevice: BluetoothDevice) {
-        checkBluetoothBondStatus(bluetoothDevice)
-    }
-
-    override fun actionStateChanged(extraState: Int, extraPreviousState: Int) {
-        if (extraPreviousState == BluetoothAdapter.STATE_ON &&//
-                (extraState == BluetoothAdapter.STATE_OFF || //
-                        extraState == BluetoothAdapter.STATE_TURNING_OFF)) {
-            cancelSearch()
-        }
-    }
-
-    override fun actionDiscoveryFinished(searchComplete: Boolean) {
-        callback.searchStatus(searchComplete)
     }
 
     private val default_connect_again_time = 5

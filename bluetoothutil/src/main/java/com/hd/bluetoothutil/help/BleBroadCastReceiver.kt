@@ -7,11 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Parcelable
-
 import com.hd.bluetoothutil.callback.BleBoundProgressCallback
 import com.hd.bluetoothutil.utils.BL
 import com.hd.bluetoothutil.utils.ClsUtils
-
 import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -78,23 +76,34 @@ class BleBroadCastReceiver : BroadcastReceiver() {
     private fun foundDevice(intent: Intent) {
         val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
         if (device != null && device.name != null && device.name == callbackWeakReference!!.get()?.deviceName) {
-            searchComplete.set(true)
-            BL.d("found target device :" + device.name + "=" + searchComplete)
-            if (BluetoothDevice.BOND_NONE == device.bondState) {
-                var bondSuccess: Boolean
-                try {
-                    bondSuccess = ClsUtils.createBond(device.javaClass, device)
-                    BL.d("start bond device 1：" + bondSuccess)
-                } catch (e: Exception) {
-                    bondSuccess = false
+            val macAddress = callbackWeakReference!!.get()?.macAddress
+            if (!macAddress.isNullOrEmpty()) {
+                if(macAddress==device.address){
+                    startBound(device)
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !bondSuccess) {
-                    BL.d("start bond device 2")
-                    device.createBond()
-                }
-            } else {
-                BL.d("target device bond status :" + device.bondState)
+            }else{
+                startBound(device)
             }
+        }
+    }
+
+    private fun startBound(device: BluetoothDevice) {
+        searchComplete.set(true)
+        BL.d("found target device :" + device.name + "=" + searchComplete)
+        if (BluetoothDevice.BOND_NONE == device.bondState) {
+            var bondSuccess: Boolean
+            try {
+                bondSuccess = ClsUtils.createBond(device.javaClass, device)
+                BL.d("start bond device 1：" + bondSuccess)
+            } catch (e: Exception) {
+                bondSuccess = false
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !bondSuccess) {
+                BL.d("start bond device 2")
+                device.createBond()
+            }
+        } else {
+            BL.d("target device bond status :" + device.bondState)
         }
     }
 

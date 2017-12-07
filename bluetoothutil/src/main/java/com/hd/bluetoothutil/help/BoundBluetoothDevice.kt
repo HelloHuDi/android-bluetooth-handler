@@ -9,6 +9,7 @@ import com.hd.bluetoothutil.config.DeviceVersion
 import com.hd.bluetoothutil.device.BluetoothDeviceEntity
 import com.hd.bluetoothutil.utils.BL
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 /**
@@ -65,17 +66,21 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
     fun boundDevice(entity: BluetoothDeviceEntity) {
         if (entity.version == DeviceVersion.BLUETOOTH_4) return
         reset()
+        val restrain = AtomicBoolean(false)
         BleBroadCastReceiver.newInstance(object : BleBoundProgressCallback {
 
             override val pin: String? get() = entity.pin
 
             override val deviceName: String? get() = entity.deviceName
 
+            override val macAddress: String? get() = entity.macAddress
+
             override fun actionBondStateChanged(bluetoothDevice: BluetoothDevice) {
-                if (bluetoothDevice.name == deviceName) {
+                if (!restrain.get() && bluetoothDevice.name == deviceName) {
                     BL.d("device bond state changed :" + bluetoothDevice.bondState)
                     when (bluetoothDevice.bondState) {
                         BluetoothDevice.BOND_BONDED -> {
+                            restrain.set(true)
                             boundMap.put(bluetoothDevice, true)
                             callback?.boundStatus(boundMap)
                         }
@@ -89,11 +94,21 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
                         (extraState == BluetoothAdapter.STATE_OFF || //
                                 extraState == BluetoothAdapter.STATE_TURNING_OFF)) {
                     BleBroadCastReceiver.clear()
+                    response()
                 }
             }
 
             override fun actionDiscoveryFinished(searchComplete: Boolean) {
                 BleBroadCastReceiver.clear()
+                response()
+            }
+
+            private fun response() {
+                if (!restrain.get()) {
+                    restrain.set(true)
+                    boundMap.clear()
+                    callback?.boundStatus(boundMap)
+                }
             }
         })
     }
