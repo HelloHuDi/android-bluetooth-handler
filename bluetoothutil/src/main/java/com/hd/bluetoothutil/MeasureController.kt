@@ -6,5 +6,5 @@ package com.hd.bluetoothutil
  * control bluetooth measure
  */
 class MeasureController {
-
+  
 }

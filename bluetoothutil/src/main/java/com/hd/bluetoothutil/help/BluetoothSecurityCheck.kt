@@ -2,6 +2,7 @@ package com.hd.bluetoothutil.help
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -12,13 +13,14 @@ import android.widget.Toast
 import com.hd.bluetoothutil.R
 import com.hd.bluetoothutil.callback.SecurityCheckCallback
 import com.hd.bluetoothutil.config.DeviceVersion
+import com.hd.bluetoothutil.device.BluetoothDeviceEntity
 import com.hd.bluetoothutil.utils.BL
 
 /**
  * Created by hd on 2017/8/8 .
  * check device feature
  */
-class BluetoothSecurityCheck private constructor(private var context: Context,val callback: SecurityCheckCallback?) {
+class BluetoothSecurityCheck private constructor(private var context: Context, val callback: SecurityCheckCallback?) {
 
     fun check(deviceVersion: DeviceVersion): BluetoothAdapter? {
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
@@ -30,6 +32,24 @@ class BluetoothSecurityCheck private constructor(private var context: Context,va
             bluetoothManager = this.context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         }
         return getBluetoothAdapter(deviceVersion, bluetoothManager)
+    }
+
+    fun checkSameDevice(searchDevice: BluetoothDevice?, entity: BluetoothDeviceEntity?)
+            = checkSameDevice(searchDevice, entity?.deviceName, entity?.macAddress)
+
+    fun checkSameDevice(searchDevice: BluetoothDevice?, targetDevice: BluetoothDevice?)
+            = checkSameDevice(searchDevice, targetDevice?.name, targetDevice?.address)
+
+    fun checkSameDevice(searchDevice: BluetoothDevice?, targetDeviceName: String?, targetDeviceAddress: String?): Boolean {
+        return if (searchDevice != null) {
+            if (targetDeviceAddress.isNullOrEmpty()) {
+                searchDevice.name == targetDeviceName
+            } else {
+                searchDevice.name == targetDeviceName && searchDevice.address == targetDeviceAddress
+            }
+        } else {
+            false
+        }
     }
 
     private fun getBluetoothAdapter(deviceVersion: DeviceVersion, bluetoothManager: BluetoothManager?): BluetoothAdapter? {
@@ -84,17 +104,17 @@ class BluetoothSecurityCheck private constructor(private var context: Context,va
     }
 
     private fun hint(@StringRes resId: Int) {
-        if(callback==null){
+        if (callback == null) {
             Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
-        }else{
+        } else {
             callback.securityHint(context.resources.getString(resId))
         }
     }
 
     companion object {
 
-        fun newInstance(context: Context,callback: SecurityCheckCallback?=null): BluetoothSecurityCheck {
-            return BluetoothSecurityCheck(context,callback)
+        fun newInstance(context: Context, callback: SecurityCheckCallback? = null): BluetoothSecurityCheck {
+            return BluetoothSecurityCheck(context.applicationContext, callback)
         }
     }
 }

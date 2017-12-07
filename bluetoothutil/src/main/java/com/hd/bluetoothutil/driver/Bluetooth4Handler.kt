@@ -15,6 +15,7 @@ import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.device.BluetoothDeviceEntity
+import com.hd.bluetoothutil.help.BluetoothSecurityCheck
 import com.hd.bluetoothutil.utils.BL
 import com.hd.bluetoothutil.utils.HexDump
 import java.util.*
@@ -25,7 +26,7 @@ import java.util.*
  *
  */
 class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
-                        bluetoothAdapter: BluetoothAdapter, val callback: MeasureBle4ProgressCallback)
+                        bluetoothAdapter: BluetoothAdapter,callback: MeasureBle4ProgressCallback)
     : BluetoothHandler(context, entity, bluetoothAdapter, callback) {
 
     private var targetDevice: BluetoothDevice? = null
@@ -117,7 +118,7 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
 
     private fun scanComplete(targetDevice: BluetoothDevice) {
         BL.d("found current device name is ：${targetDevice.name}  ,the target device name ：${entity.deviceName}")
-        if (checkSameDevice(targetDevice)) {
+        if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(targetDevice,entity) ) {
             callback.searchStatus(true)
             stopScan()
             this.targetDevice = targetDevice
@@ -198,7 +199,7 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
             } else {
                 val readByte = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)
                 BL.d("data be update and start receive :" + HexDump.toHexString(readByte) + "==" + Arrays.toString(readByte))
-                callback.reading(readByte)
+                reading(readByte)
             }
         }
     }
@@ -229,7 +230,7 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
 
     private fun setNotifition(bluetoothGattCharacteristic: BluetoothGattCharacteristic, //
                setNotifition: BooleanArray, mNotifyCharacteristic: Array<BluetoothGattCharacteristic?>) {
-        callback.write(bluetoothGattCharacteristic, mbluetoothLeService!!)
+        (callback as MeasureBle4ProgressCallback).write(bluetoothGattCharacteristic, mbluetoothLeService!!)
         BL.d("start write data to device: " + Arrays.toString(bluetoothGattCharacteristic.value) //
                 + "==" + entity.targetCharacteristicUuid + "==" + bluetoothGattCharacteristic.uuid)
         val hasTarget = entity.targetCharacteristicUuid  != null && bluetoothGattCharacteristic.uuid == entity.targetCharacteristicUuid

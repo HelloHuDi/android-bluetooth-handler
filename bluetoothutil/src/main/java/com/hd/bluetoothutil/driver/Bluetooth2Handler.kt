@@ -9,6 +9,7 @@ import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.device.BluetoothDeviceEntity
+import com.hd.bluetoothutil.help.BluetoothSecurityCheck
 import com.hd.bluetoothutil.help.BoundBluetoothDevice
 import com.hd.bluetoothutil.utils.BL
 import java.io.IOException
@@ -23,7 +24,7 @@ import java.util.*
  *
  */
 class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
-                        bluetoothAdapter: BluetoothAdapter, val callback: MeasureBle2ProgressCallback)
+                        bluetoothAdapter: BluetoothAdapter, callback: MeasureBle2ProgressCallback)
     : BluetoothHandler(context, entity, bluetoothAdapter, callback) {
 
     private var inputStream: InputStream? = null
@@ -66,7 +67,8 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
             override fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
                 for ((device, bound) in boundMap) {
-                    if (checkSameDevice(device) && bound && !searchComplete) {
+                    if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device,entity)
+                            && bound && !searchComplete) {
                         searchComplete = true
                         cancelSearch()
                         startConnect(device)
@@ -172,7 +174,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         private fun reading(): Boolean {
             if (outputStream != null && inputStream != null) {
                 try {
-                    callback.write(outputStream!!)
+                    (callback as MeasureBle2ProgressCallback).write(outputStream!!)
                 } catch (ignored: Exception) {
                     BL.d("write data error ：" + ignored)
                 }
@@ -187,7 +189,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 if (len > 0) {
                     val result = ByteArray(len)
                     byteBuffer.get(result, 0, len)
-                    callback.reading(result)
+                   reading(result)
                 }
                 byteBuffer.clear()
                 return false

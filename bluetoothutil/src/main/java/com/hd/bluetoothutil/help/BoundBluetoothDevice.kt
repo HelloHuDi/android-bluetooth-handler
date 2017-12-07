@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Created by hd on 2017/9/1 .
  * bound bluetooth device
  */
-class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundStatusCallback?) {
+class BoundBluetoothDevice constructor(val context: Context, val callback: BleBoundStatusCallback?) {
 
     companion object {
         fun newInstance(context: Context, callback: BleBoundStatusCallback?) = BoundBluetoothDevice(context, callback)
@@ -76,7 +76,8 @@ class BoundBluetoothDevice constructor(context: Context, val callback: BleBoundS
             override val macAddress: String? get() = entity.macAddress
 
             override fun actionBondStateChanged(bluetoothDevice: BluetoothDevice) {
-                if (!restrain.get() && bluetoothDevice.name == deviceName) {
+                if (!restrain.get() &&
+                        BluetoothSecurityCheck.newInstance(context).checkSameDevice(bluetoothDevice, entity)) {
                     BL.d("device bond state changed :" + bluetoothDevice.bondState)
                     when (bluetoothDevice.bondState) {
                         BluetoothDevice.BOND_BONDED -> {

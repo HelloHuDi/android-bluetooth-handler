@@ -26,7 +26,7 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         val callback = callbackWeakReference!!.get()
         if (callback != null) {
             when (action) {
-                BluetoothDevice.ACTION_FOUND -> foundDevice(intent)
+                BluetoothDevice.ACTION_FOUND -> foundDevice(context, intent)
                 BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent)
                 BluetoothDevice.ACTION_BOND_STATE_CHANGED ->
                     callback.actionBondStateChanged(intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice)
@@ -73,17 +73,11 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun foundDevice(intent: Intent) {
+    private fun foundDevice(context: Context, intent: Intent) {
         val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-        if (device != null && device.name != null && device.name == callbackWeakReference!!.get()?.deviceName) {
-            val macAddress = callbackWeakReference!!.get()?.macAddress
-            if (!macAddress.isNullOrEmpty()) {
-                if(macAddress==device.address){
-                    startBound(device)
-                }
-            }else{
-                startBound(device)
-            }
+        if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device,
+                callbackWeakReference!!.get()?.deviceName, callbackWeakReference!!.get()?.macAddress)) {
+            startBound(device)
         }
     }
 
