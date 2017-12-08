@@ -4,5 +4,5 @@
     <string name="get_ble_service_error">获取蓝牙服务失败</string>
     <string name="open_ble_error">打开蓝牙失败,请检查当前设备蓝牙功能</string>
     <string name="error_bluetooth_not_supported">当前设备不支持蓝牙功能</string>
-    <string name="not_request_bluetooth_permission">暂未授予蓝牙权限</string>
+    <string name="not_request_bluetooth_permission">未授予蓝牙权限</string>
 </resources>

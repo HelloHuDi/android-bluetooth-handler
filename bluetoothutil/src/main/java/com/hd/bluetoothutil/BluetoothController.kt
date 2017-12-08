@@ -28,6 +28,7 @@ object BluetoothController {
     private var callback: MeasureProgressCallback? = null
 
     private fun reset() {
+        BL.d("BluetoothController reset")
         bluetoothHandler = null
         callback = null
         entity = null
@@ -42,6 +43,7 @@ object BluetoothController {
     }
 
     private fun initBlueHandler(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback) {
+        BL.d("BluetoothController initBlueHandler")
         val targetVersion = entity.version
         val mBluetoothAdapter = BluetoothSecurityCheck.newInstance(context, object : SecurityCheckCallback {
             override fun securityHint(hint: String) {

@@ -5,11 +5,10 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import com.hd.bluetoothutil.callback.BleBoundProgressCallback
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
-import com.hd.bluetoothutil.config.DeviceVersion
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
+import com.hd.bluetoothutil.config.DeviceVersion
 import com.hd.bluetoothutil.utils.BL
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 
 /**
@@ -44,16 +43,8 @@ class BoundBluetoothDevice constructor(val context: Context, val callback: BleBo
         if (entity.version == DeviceVersion.BLUETOOTH_4) return true
         val devices = bluetoothAdapter?.bondedDevices
         if (devices != null && devices.isNotEmpty()) {
-            val nullName = entity.deviceName.isNullOrEmpty()
-            val nullAddress = entity.macAddress.isNullOrEmpty()
-            if (nullName && !nullAddress) {
-                devices.filter { it.address == entity.macAddress }.forEach { boundMap.put(it, it.bondState == BluetoothDevice.BOND_BONDED) }
-            } else if (!nullName && nullAddress) {
-                devices.filter { it.name == entity.deviceName }.forEach { boundMap.put(it, it.bondState == BluetoothDevice.BOND_BONDED) }
-            } else if (!nullName && !nullAddress) {
-                devices.filter { it.name == entity.deviceName && it.address == entity.macAddress }
-                        .forEach { boundMap.put(it, it.bondState == BluetoothDevice.BOND_BONDED) }
-            }
+            devices.filter {BluetoothSecurityCheck.newInstance(context).checkSameDevice(it, entity)}
+                    .forEach { boundMap.put(it,true) }
             if (boundMap.size > 0) {
                 callback?.boundStatus(boundMap)
                 return true
@@ -66,7 +57,6 @@ class BoundBluetoothDevice constructor(val context: Context, val callback: BleBo
     fun boundDevice(entity: BluetoothDeviceEntity) {
         if (entity.version == DeviceVersion.BLUETOOTH_4) return
         reset()
-        val restrain = AtomicBoolean(false)
         BleBroadCastReceiver.newInstance(object : BleBoundProgressCallback {
 
             override val pin: String? get() = entity.pin
@@ -76,12 +66,10 @@ class BoundBluetoothDevice constructor(val context: Context, val callback: BleBo
             override val macAddress: String? get() = entity.macAddress
 
             override fun actionBondStateChanged(bluetoothDevice: BluetoothDevice) {
-                if (!restrain.get() &&
-                        BluetoothSecurityCheck.newInstance(context).checkSameDevice(bluetoothDevice, entity)) {
+                if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(bluetoothDevice, entity)) {
                     BL.d("device bond state changed :" + bluetoothDevice.bondState)
                     when (bluetoothDevice.bondState) {
                         BluetoothDevice.BOND_BONDED -> {
-                            restrain.set(true)
                             boundMap.put(bluetoothDevice, true)
                             callback?.boundStatus(boundMap)
                         }
@@ -105,8 +93,7 @@ class BoundBluetoothDevice constructor(val context: Context, val callback: BleBo
             }
 
             private fun response() {
-                if (!restrain.get()) {
-                    restrain.set(true)
+                if (boundMap.size>0) {
                     boundMap.clear()
                     callback?.boundStatus(boundMap)
                 }

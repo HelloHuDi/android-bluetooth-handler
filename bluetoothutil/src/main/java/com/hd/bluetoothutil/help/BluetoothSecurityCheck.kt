@@ -27,9 +27,12 @@ class BluetoothSecurityCheck private constructor(private var context: Context, v
             hint(R.string.error_bluetooth_not_supported)
             return null
         }
-        var bluetoothManager: BluetoothManager? = null
+        val bluetoothManager: BluetoothManager?
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
             bluetoothManager = this.context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        }else{
+            hint(R.string.get_ble_service_error)
+            return null
         }
         return getBluetoothAdapter(deviceVersion, bluetoothManager)
     }

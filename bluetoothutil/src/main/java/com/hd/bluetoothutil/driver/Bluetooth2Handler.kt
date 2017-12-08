@@ -9,7 +9,6 @@ import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
-import com.hd.bluetoothutil.help.BluetoothSecurityCheck
 import com.hd.bluetoothutil.help.BoundBluetoothDevice
 import com.hd.bluetoothutil.utils.BL
 import java.io.IOException
@@ -32,7 +31,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     private var bluetoothSocket: BluetoothSocket? = null
 
     override fun start() {
-        searchDevice()
+        searchNativeDevice()
     }
 
     override fun release() {
@@ -43,42 +42,39 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         if (bluetoothAdapter.isDiscovering) bluetoothAdapter.cancelDiscovery()
     }
 
-    private fun searchDevice() {
+    /** querying native devices that have been bound */
+    private fun searchNativeDevice() {
         callback.startSearch()
         val bound = BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
             override fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
-                for ((bluetoothDevice, boundStatus) in boundMap) {
-                    if (boundStatus) {
-                        BL.d("device status is binding , start connect and measure")
-                        callback.searchStatus(true)
-                        cancelSearch()
-                        connectDevice(bluetoothDevice)
-                    } else {
-                        startBound()
-                    }
+                for (bluetoothDevice in boundMap.keys) {
+                    BL.d("device status is binding , start connect and measure")
+                    callback.searchStatus(true)
+                    startConnect(bluetoothDevice)
+                    break
                 }
             }
         }).queryBoundStatus(entity)
-        if (!bound) startBound()
+        if (!bound) searchNearbyDevice()
     }
 
-    private fun startBound() {
-        var searchComplete = false
+
+    /** querying nearby devices ，bound device if the device is scanned*/
+    private fun searchNearbyDevice() {
         BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
             override fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
-                for ((device, bound) in boundMap) {
-                    if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device,entity)
-                            && bound && !searchComplete) {
-                        searchComplete = true
-                        cancelSearch()
+                if(boundMap.size>0) {
+                    for (device in boundMap.keys) {
+                        callback.searchStatus(true)
                         startConnect(device)
                         break
                     }
+                }else{
+                    callback.searchStatus(false)
                 }
-                callback.searchStatus(searchComplete)
             }
         }).boundDevice(entity)
-        BL.d("start found target device")
+        BL.d("start discovery target device")
         bluetoothAdapter.startDiscovery()
     }
 
@@ -112,21 +108,10 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
 
     private val byteBuffer = ByteBuffer.allocate(1024)
 
-    private fun connectDevice(ownDevice: BluetoothDevice) {
-        Thread(ConnectRunnable(ownDevice)).start()
-    }
-
     private fun startConnect(device: BluetoothDevice) {
         cancelSearch()
-        connectDevice(device)
+        Thread(ConnectRunnable(device)).start()
     }
-
-    private val default_connect_again_time = 5
-
-    /**
-     * connect again count
-     */
-    private var connect_again_time = default_connect_again_time
 
     private inner class ConnectRunnable internal constructor(private val device: BluetoothDevice) : Runnable {
 
@@ -139,17 +124,17 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             try {
                 bluetoothSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(GattAttributeResolver.SPP))
             } catch (e: IOException) {
-                e.printStackTrace()
+                BL.d("createRfcommSocketToServiceRecord error :" + e)
             }
             if (bluetoothSocket == null) {
                 BL.d("connect error ,the bluetoothSocket is null ")
-                connectAgain()
+                reconnected()
                 return
             }
             callback.startConnect()
             if (!BluetoothConnector.newInstance().connectSocket(device, bluetoothSocket!!)) {
-                BL.d("connect again time ：$connect_again_time=$status")
-                connectAgain()
+                BL.d("connect again time ：$reconnected_number=$status")
+                reconnected()
                 return
             } else {
                 callback.connectStatus(true)
@@ -165,7 +150,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 BL.d("bluetoothSocket outputStream error :" + e)
             }
             callback.startRead()
-            connect_again_time = default_connect_again_time
+            reconnected_number = default_reconnected_number
             while (status === BleMeasureStatus.RUNNING) {
                 if (reading()) return
             }
@@ -182,14 +167,14 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 try {
                     len = inputStream!!.read(byteBuffer.array())
                 } catch (ignored: Exception) {
-                    BL.d("reading error ：$status==$ignored=$connect_again_time")
-                    connectAgain()
+                    BL.d("reading error ：$status==$ignored=$reconnected_number")
+                    reconnected()
                     return true
                 }
                 if (len > 0) {
                     val result = ByteArray(len)
                     byteBuffer.get(result, 0, len)
-                   reading(result)
+                    reading(result)
                 }
                 byteBuffer.clear()
                 return false
@@ -206,9 +191,13 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             callback.error()
         }
 
-        private fun connectAgain() {
-            if (status === BleMeasureStatus.RUNNING && connect_again_time > 0) {
-                connect_again_time--
+        private val default_reconnected_number = 5
+
+        private var reconnected_number = default_reconnected_number
+
+        private fun reconnected() {
+            if (status === BleMeasureStatus.RUNNING && reconnected_number > 0 && entity.reconnected) {
+                reconnected_number--
                 closeSocket()
                 SystemClock.sleep(200)
                 run()
