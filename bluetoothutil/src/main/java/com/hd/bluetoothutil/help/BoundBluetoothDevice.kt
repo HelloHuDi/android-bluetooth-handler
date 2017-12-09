@@ -66,8 +66,8 @@ class BoundBluetoothDevice constructor(val context: Context, val callback: BleBo
             override val macAddress: String? get() = entity.macAddress
 
             override fun actionBondStateChanged(bluetoothDevice: BluetoothDevice) {
+                BL.d("device bond state changed :" +bluetoothDevice.name+"=="+bluetoothDevice.bondState)
                 if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(bluetoothDevice, entity)) {
-                    BL.d("device bond state changed :" + bluetoothDevice.bondState)
                     when (bluetoothDevice.bondState) {
                         BluetoothDevice.BOND_BONDED -> {
                             boundMap.put(bluetoothDevice, true)
@@ -79,15 +79,16 @@ class BoundBluetoothDevice constructor(val context: Context, val callback: BleBo
             }
 
             override fun actionStateChanged(extraState: Int, extraPreviousState: Int) {
+                BL.d("action state changed :$extraState=$extraPreviousState")
                 if (extraPreviousState == BluetoothAdapter.STATE_ON &&//
                         (extraState == BluetoothAdapter.STATE_OFF || //
                                 extraState == BluetoothAdapter.STATE_TURNING_OFF)) {
                     BleBroadCastReceiver.clear()
-                    response()
                 }
             }
 
             override fun actionDiscoveryFinished(searchComplete: Boolean) {
+                BL.d("actionDiscoveryFinished:"+searchComplete)
                 BleBroadCastReceiver.clear()
                 response()
             }
@@ -95,8 +96,8 @@ class BoundBluetoothDevice constructor(val context: Context, val callback: BleBo
             private fun response() {
                 if (boundMap.size>0) {
                     boundMap.clear()
-                    callback?.boundStatus(boundMap)
                 }
+                callback?.boundStatus(boundMap)
             }
         })
     }

@@ -30,7 +30,7 @@ class BluetoothSecurityCheck private constructor(private var context: Context, v
         val bluetoothManager: BluetoothManager?
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
             bluetoothManager = this.context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        }else{
+        } else {
             hint(R.string.get_ble_service_error)
             return null
         }
@@ -77,12 +77,16 @@ class BluetoothSecurityCheck private constructor(private var context: Context, v
             enable = mBluetoothAdapter.enable()
             SystemClock.sleep(1000)
         }
-        if (enable) {
+        BL.d("bluetooth enable status :$enable==${mBluetoothAdapter.state}")
+        if (enable && mBluetoothAdapter.state == BluetoothAdapter.STATE_ON) {
             return if (deviceVersion === DeviceVersion.BLUETOOTH_4) {
                 checkBle()
             } else {
                 true
             }
+        } else if (enable && mBluetoothAdapter.state != BluetoothAdapter.STATE_ON) {
+            SystemClock.sleep(100)
+            return checkFeature(deviceVersion, mBluetoothAdapter)
         } else {
             hint(R.string.open_ble_error)
         }

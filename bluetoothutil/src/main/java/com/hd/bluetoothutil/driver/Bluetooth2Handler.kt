@@ -45,6 +45,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     /** querying native devices that have been bound */
     private fun searchNativeDevice() {
         callback.startSearch()
+        BL.d("start search native device")
         val bound = BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
             override fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
                 for (bluetoothDevice in boundMap.keys) {
@@ -61,8 +62,11 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
 
     /** querying nearby devices ，bound device if the device is scanned*/
     private fun searchNearbyDevice() {
+        BL.d("start search nearby device")
+        bluetoothAdapter.startDiscovery()
         BoundBluetoothDevice.newInstance(context, object : BleBoundStatusCallback {
             override fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
+                BL.d("bound device :"+boundMap)
                 if(boundMap.size>0) {
                     for (device in boundMap.keys) {
                         callback.searchStatus(true)
@@ -74,8 +78,6 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 }
             }
         }).boundDevice(entity)
-        BL.d("start discovery target device")
-        bluetoothAdapter.startDiscovery()
     }
 
     private fun clear() {
@@ -109,6 +111,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     private val byteBuffer = ByteBuffer.allocate(1024)
 
     private fun startConnect(device: BluetoothDevice) {
+        BL.d("start connect device : $device")
         cancelSearch()
         Thread(ConnectRunnable(device)).start()
     }
@@ -198,6 +201,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         private fun reconnected() {
             if (status === BleMeasureStatus.RUNNING && reconnected_number > 0 && entity.reconnected) {
                 reconnected_number--
+                BL.d("reconnected:"+reconnected_number)
                 closeSocket()
                 SystemClock.sleep(200)
                 run()

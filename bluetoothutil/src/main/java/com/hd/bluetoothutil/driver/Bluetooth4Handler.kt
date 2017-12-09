@@ -17,7 +17,6 @@ import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.help.BluetoothSecurityCheck
 import com.hd.bluetoothutil.utils.BL
-import com.hd.bluetoothutil.utils.HexDump
 import java.util.*
 
 
@@ -84,10 +83,19 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
         } else {
             bluetoothAdapter.stopLeScan(leScanCallback)
         }
-        if (targetDevice == null)
-            callback.searchStatus(false)
-        else
-            callback.searchStatus(true)
+        notificationSearchStatus()
+    }
+
+    private var searchComplete = false
+
+    private fun notificationSearchStatus() {
+        if (!searchComplete) {
+            searchComplete = true
+            if (targetDevice == null)
+                callback.searchStatus(false)
+            else
+                callback.searchStatus(true)
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -122,8 +130,8 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
     private fun scanComplete(targetDevice: BluetoothDevice) {
         BL.d("found current device name is ：${targetDevice.name}  ,the target device name ：${entity.deviceName}")
         if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(targetDevice, entity)) {
-            stopScan()
             this.targetDevice = targetDevice
+            stopScan()
             openService()
         }
     }
@@ -206,7 +214,6 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                 }
                 else -> {
                     val readByte = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA)
-                    BL.d("data be update and start receive :" + HexDump.toHexString(readByte) + "==" + Arrays.toString(readByte))
                     reading(readByte)
                 }
             }

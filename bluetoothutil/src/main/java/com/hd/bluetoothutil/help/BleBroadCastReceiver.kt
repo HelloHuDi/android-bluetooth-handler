@@ -75,6 +75,7 @@ class BleBroadCastReceiver : BroadcastReceiver() {
 
     private fun foundDevice(context: Context, intent: Intent) {
         val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+        BL.d("found device :"+device)
         if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device,
                 callbackWeakReference!!.get()?.deviceName, callbackWeakReference!!.get()?.macAddress)) {
             startBound(device)
@@ -112,6 +113,7 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         }
 
         fun clear() {
+            BL.d("broad cast receiver clear callback")
             if (callbackWeakReference != null && callbackWeakReference!!.get() != null) {
                 callbackWeakReference!!.clear()
             }
