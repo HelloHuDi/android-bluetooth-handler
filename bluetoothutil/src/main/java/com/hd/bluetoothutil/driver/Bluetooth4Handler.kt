@@ -3,19 +3,15 @@ package com.hd.bluetoothutil.driver
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.le.BluetoothLeScanner
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
 import android.content.*
-import android.os.Build
-import android.os.Handler
 import android.os.IBinder
-import android.os.SystemClock
-import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
+import com.hd.bluetoothutil.callback.ScannerCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
+import com.hd.bluetoothutil.config.DeviceVersion
 import com.hd.bluetoothutil.help.BluetoothSecurityCheck
+import com.hd.bluetoothutil.scan.Scanner
 import com.hd.bluetoothutil.utils.BL
 import java.util.*
 
@@ -26,11 +22,10 @@ import java.util.*
  */
 class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                         bluetoothAdapter: BluetoothAdapter, callback: MeasureBle4ProgressCallback)
-    : BluetoothHandler(context, entity, bluetoothAdapter, callback) {
+    : BluetoothHandler(context, entity, bluetoothAdapter, callback), ScannerCallback {
 
     private var targetDevice: BluetoothDevice? = null
     private var mbluetoothLeService: BluetoothLeService? = null
-    private var mBluetoothLeScanner: BluetoothLeScanner? = null
 
     override fun start() {
         context.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
@@ -38,12 +33,8 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
             val connectStatus = mbluetoothLeService!!.connect(targetDevice?.address)
             callback.connectStatus(connectStatus)
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mBluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
-            }
-            BL.d("startScan current device sdk :" + Build.VERSION.SDK_INT + "==" + mBluetoothLeScanner)
             callback.startSearch()
-            startScan()
+            Scanner.scan(bluetoothAdapter, DeviceVersion.BLUETOOTH_4, this)
         }
     }
 
@@ -64,26 +55,20 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
         }
     }
 
-    private fun startScan() {
-        Handler(context.mainLooper).postDelayed({
-            BL.d("stop scan ble after 30000 millisecond")
-            stopScan()
-        }, 30000)
-        BL.d("startScan current device sdk :" + Build.VERSION.SDK_INT + "==" + mBluetoothLeScanner)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBluetoothLeScanner!!.startScan(mScanCallback)
-        } else {
-            bluetoothAdapter.startLeScan(leScanCallback)
+    override fun scan(scanComplete: Boolean, devices: List<BluetoothDevice>) {
+        if(!scanComplete) {
+            for (device in devices) {
+                if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device, entity)) {
+                    targetDevice = device
+                    notificationSearchStatus()
+                    openService()
+                    break
+                }
+            }
+        }else{
+            searchComplete=true
+            notificationSearchStatus()
         }
-    }
-
-    private fun stopScan() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBluetoothLeScanner?.stopScan(mScanCallback)
-        } else {
-            bluetoothAdapter.stopLeScan(leScanCallback)
-        }
-        notificationSearchStatus()
     }
 
     private var searchComplete = false
@@ -96,48 +81,6 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
             else
                 callback.searchStatus(true)
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private val mScanCallback = object : ScanCallback() {
-        override fun onScanResult(callbackType: Int, result: ScanResult) {
-            super.onScanResult(callbackType, result)
-            scanComplete(result.device)
-        }
-
-        override fun onBatchScanResults(results: List<ScanResult>) {
-            super.onBatchScanResults(results)
-            for (sanest in results) {
-                scanComplete(sanest.device)
-            }
-        }
-
-        private var AGAIN_TIME = 3
-
-        override fun onScanFailed(errorCode: Int) {
-            super.onScanFailed(errorCode)
-            BL.d("not found device and scan again ,current scan count :" + AGAIN_TIME)
-            if (AGAIN_TIME > 0) {
-                SystemClock.sleep(300)
-                startScan()
-                AGAIN_TIME--
-            } else {
-                stopScan()
-            }
-        }
-    }
-
-    private fun scanComplete(targetDevice: BluetoothDevice) {
-        BL.d("found current device name is ：${targetDevice.name}  ,the target device name ：${entity.deviceName}")
-        if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(targetDevice, entity)) {
-            this.targetDevice = targetDevice
-            stopScan()
-            openService()
-        }
-    }
-
-    private val leScanCallback = BluetoothAdapter.LeScanCallback { bluetoothDevice, _, _ ->
-        scanComplete(bluetoothDevice)
     }
 
     private fun openService() {
