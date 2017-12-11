@@ -26,8 +26,8 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         val callback = callbackWeakReference!!.get()
         if (callback != null) {
             when (action) {
-                BluetoothDevice.ACTION_FOUND -> foundDevice(context, intent)
-                BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent)
+                BluetoothDevice.ACTION_FOUND -> foundDevice(context, intent,callback)
+                BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent,callback)
                 BluetoothDevice.ACTION_BOND_STATE_CHANGED ->
                     callback.actionBondStateChanged(intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice)
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
@@ -43,10 +43,40 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun bondDevice(intent: Intent) {
+    private fun foundDevice(context: Context, intent: Intent, callback: BleBoundProgressCallback?) {
         val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-        BL.d("bond device ,set pin :" + device + "=" + callbackWeakReference?.get()?.deviceName)
-        if (device != null && device.name != null && device.name == callbackWeakReference?.get()?.deviceName) {
+        BL.d("found device :" + device)
+        callback?.foundDevice(device)
+        if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device,
+                callback?.deviceName,callback?.macAddress)) {
+            startBound(device)
+        }
+    }
+
+    private fun startBound(device: BluetoothDevice) {
+        searchComplete.set(true)
+        BL.d("found target device :" + device.name + "=" + searchComplete)
+        if (BluetoothDevice.BOND_NONE == device.bondState) {
+            var bondSuccess: Boolean
+            try {
+                bondSuccess = ClsUtils.createBond(device.javaClass, device)
+                BL.d("start bond device 1：" + bondSuccess)
+            } catch (e: Exception) {
+                bondSuccess = false
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !bondSuccess) {
+                BL.d("start bond device 2")
+                device.createBond()
+            }
+        } else {
+            BL.d("target device bond status :" + device.bondState)
+        }
+    }
+
+    private fun bondDevice(intent: Intent, callback: BleBoundProgressCallback?) {
+        val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+        BL.d("bond device ,set pin :" + device + "=" + callback?.deviceName)
+        if (device != null && device.name != null && device.name == callback?.deviceName) {
             abortBroadcast()
             setPain(0, device)
         }
@@ -70,35 +100,6 @@ class BleBroadCastReceiver : BroadcastReceiver() {
             if (++position >= pairArray!!.size)
                 return
             setPain(position, device)
-        }
-    }
-
-    private fun foundDevice(context: Context, intent: Intent) {
-        val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-        BL.d("found device :"+device)
-        if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device,
-                callbackWeakReference!!.get()?.deviceName, callbackWeakReference!!.get()?.macAddress)) {
-            startBound(device)
-        }
-    }
-
-    private fun startBound(device: BluetoothDevice) {
-        searchComplete.set(true)
-        BL.d("found target device :" + device.name + "=" + searchComplete)
-        if (BluetoothDevice.BOND_NONE == device.bondState) {
-            var bondSuccess: Boolean
-            try {
-                bondSuccess = ClsUtils.createBond(device.javaClass, device)
-                BL.d("start bond device 1：" + bondSuccess)
-            } catch (e: Exception) {
-                bondSuccess = false
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !bondSuccess) {
-                BL.d("start bond device 2")
-                device.createBond()
-            }
-        } else {
-            BL.d("target device bond status :" + device.bondState)
         }
     }
 

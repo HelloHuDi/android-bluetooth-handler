@@ -34,7 +34,8 @@ object BluetoothController {
         entity = null
     }
 
-    fun init(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback): BluetoothController {
+    fun init(context: Context, entity: BluetoothDeviceEntity,
+             callback: MeasureProgressCallback): BluetoothController {
         reset()
         initBlueHandler(context.applicationContext, entity, callback)
         this.entity = entity

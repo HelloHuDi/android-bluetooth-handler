@@ -1,7 +1,6 @@
 package com.hd.bluetoothutil.driver
 
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.*
 import android.os.IBinder
@@ -9,9 +8,6 @@ import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.callback.ScannerCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
-import com.hd.bluetoothutil.config.DeviceVersion
-import com.hd.bluetoothutil.help.BluetoothSecurityCheck
-import com.hd.bluetoothutil.scan.Scanner
 import com.hd.bluetoothutil.utils.BL
 import java.util.*
 
@@ -24,7 +20,6 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                         bluetoothAdapter: BluetoothAdapter, callback: MeasureBle4ProgressCallback)
     : BluetoothHandler(context, entity, bluetoothAdapter, callback), ScannerCallback {
 
-    private var targetDevice: BluetoothDevice? = null
     private var mbluetoothLeService: BluetoothLeService? = null
 
     override fun start() {
@@ -33,13 +28,22 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
             val connectStatus = mbluetoothLeService!!.connect(targetDevice?.address)
             callback.connectStatus(connectStatus)
         } else {
-            callback.startSearch()
-            Scanner.scan(bluetoothAdapter, DeviceVersion.BLUETOOTH_4, this)
+            startScan()
         }
     }
 
     override fun release() {
         unBindAndRegister()
+    }
+
+    override fun startConnect() {
+        if (mbluetoothLeService != null) {
+            val connectStatus = mbluetoothLeService!!.connect(targetDevice!!.address)
+            callback.connectStatus(connectStatus)
+        } else {
+            val gattServiceIntent = Intent(context, BluetoothLeService::class.java)
+            context.bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
+        }
     }
 
     private fun unBindAndRegister() {
@@ -52,44 +56,6 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
         if (mGattUpdateReceiver != null) {
             context.unregisterReceiver(mGattUpdateReceiver)
             mGattUpdateReceiver = null
-        }
-    }
-
-    override fun scan(scanComplete: Boolean, devices: List<BluetoothDevice>) {
-        if(!scanComplete) {
-            for (device in devices) {
-                if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device, entity)) {
-                    targetDevice = device
-                    notificationSearchStatus()
-                    openService()
-                    break
-                }
-            }
-        }else{
-            searchComplete=true
-            notificationSearchStatus()
-        }
-    }
-
-    private var searchComplete = false
-
-    private fun notificationSearchStatus() {
-        if (!searchComplete) {
-            searchComplete = true
-            if (targetDevice == null)
-                callback.searchStatus(false)
-            else
-                callback.searchStatus(true)
-        }
-    }
-
-    private fun openService() {
-        if (mbluetoothLeService != null) {
-            val connectStatus = mbluetoothLeService!!.connect(targetDevice!!.address)
-            callback.connectStatus(connectStatus)
-        } else {
-            val gattServiceIntent = Intent(context, BluetoothLeService::class.java)
-            context.bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
         }
     }
 
@@ -222,6 +188,4 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
             mbluetoothLeService!!.setCharacteristicNotification(bluetoothGattCharacteristic, true)
         }
     }
-
-
 }

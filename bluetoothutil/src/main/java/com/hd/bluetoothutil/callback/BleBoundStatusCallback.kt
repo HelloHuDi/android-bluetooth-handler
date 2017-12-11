@@ -9,6 +9,6 @@ import android.bluetooth.BluetoothDevice
 interface BleBoundStatusCallback {
 
     /** the bound status for target device  */
-    fun boundStatus(boundMap: LinkedHashMap<BluetoothDevice,Boolean>)
+    fun boundStatus(discoveryFinished:Boolean,boundMap: LinkedHashMap<BluetoothDevice,Boolean>)
 
 }

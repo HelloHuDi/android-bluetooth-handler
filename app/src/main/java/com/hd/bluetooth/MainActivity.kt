@@ -23,7 +23,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var version: Int = 2
+    private var version: Int = 4
 
     private val REQUEST_CODE = 10086
 

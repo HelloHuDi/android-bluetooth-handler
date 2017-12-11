@@ -24,6 +24,11 @@ interface BleBoundProgressCallback {
     val macAddress: String?
 
     /**
+     * notify found device
+     */
+    fun foundDevice(bluetoothDevice: BluetoothDevice)
+
+    /**
      * update device bound state
      *
      * @param bluetoothDevice maybe is null or isn't target device
