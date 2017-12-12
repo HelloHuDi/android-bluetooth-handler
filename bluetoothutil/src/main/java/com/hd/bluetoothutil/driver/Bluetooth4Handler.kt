@@ -37,6 +37,7 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
     }
 
     override fun startConnect() {
+        callback.boundStatus(true)
         if (mbluetoothLeService != null) {
             val connectStatus = mbluetoothLeService!!.connect(targetDevice!!.address)
             callback.connectStatus(connectStatus)

@@ -18,6 +18,17 @@ interface MeasureProgressCallback {
     fun searchStatus(success: Boolean)
 
     /**
+     * start binding bluetooth device
+     */
+    fun startBinding()
+
+    /**
+     * [com.hd.bluetoothutil.config.DeviceVersion.BLUETOOTH_4] default is binding
+     * @param success return true if the device binding is successful
+     */
+    fun boundStatus(success: Boolean)
+
+    /**
      * start connect bluetooth device ,it may be called many times at connect again
      */
     fun startConnect()
@@ -42,10 +53,5 @@ interface MeasureProgressCallback {
      * disconnect bluetooth device
      */
     fun disconnect()
-
-    /**
-     * unknown errors in the measurement process
-     */
-    fun error(string: String="测量失败")
 
 }

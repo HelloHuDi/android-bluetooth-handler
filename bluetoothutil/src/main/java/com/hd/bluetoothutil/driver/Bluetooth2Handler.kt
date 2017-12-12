@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock
-import com.hd.bluetoothutil.R
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
@@ -68,16 +67,16 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     override fun startConnect() {
         BL.d("start connect device : $targetDevice + ${targetDevice!!.bondState}")
         if (targetDevice!!.bondState != BluetoothDevice.BOND_BONDED) {
+            callback.boundStatus(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 /** manual binding*/
                 BL.d("manual binding")
-                if(targetDevice!!.createBond()){
+                if (targetDevice!!.createBond()) {
                     Thread(ConnectRunnable(targetDevice!!)).start()
-                }else{
-                    callback.error(context.resources.getString(R.string.binding_failed))
                 }
             }
         } else {
+            callback.boundStatus(true)
             Thread(ConnectRunnable(targetDevice!!)).start()
         }
     }
@@ -150,16 +149,9 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 byteBuffer.clear()
                 return false
             } else {
-                error(NullPointerException(Bluetooth2Handler::class.java.simpleName))
+                reconnected()
             }
             return true
-        }
-
-        private fun error(e: Exception? = null) {
-            BL.d("bluetooth handler2 error :" + e)
-            stopMeasure()
-            callback.disconnect()
-            callback.error()
         }
 
         private val default_reconnected_number = 5
@@ -175,7 +167,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 run()
             } else {
                 callback.connectStatus(false)
-                error(IOException(Bluetooth2Handler::class.java.simpleName))
+                callback.disconnect()
             }
         }
     }

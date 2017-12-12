@@ -72,10 +72,12 @@ abstract class BluetoothHandler(val context: Context, val entity: BluetoothDevic
     private fun notificationSearchStatus() {
         if (!searchComplete) {
             searchComplete = true
-            if (targetDevice == null)
+            if (targetDevice == null) {
                 callback.searchStatus(false)
-            else
+            } else {
                 callback.searchStatus(true)
+                callback.startBinding()
+            }
         }
     }
 

@@ -5,5 +5,4 @@
     <string name="open_ble_error">蓝牙打开失败,请检查当前设备蓝牙权限及功能</string>
     <string name="error_bluetooth_not_supported">当前设备不支持蓝牙功能</string>
     <string name="not_request_bluetooth_permission">未授予蓝牙权限</string>
-    <string name="binding_failed">设备绑定失败</string>
 </resources>

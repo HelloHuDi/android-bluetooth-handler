@@ -5,7 +5,6 @@ import android.content.Context
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureProgressCallback
-import com.hd.bluetoothutil.callback.SecurityCheckCallback
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.config.DeviceVersion
 import com.hd.bluetoothutil.driver.Bluetooth2Handler
@@ -46,11 +45,7 @@ object BluetoothController {
     private fun initBlueHandler(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback) {
         BL.d("BluetoothController initBlueHandler")
         val targetVersion = entity.version
-        val mBluetoothAdapter = BluetoothSecurityCheck.newInstance(context, object : SecurityCheckCallback {
-            override fun securityHint(hint: String) {
-                callback.error(hint)
-            }
-        }).check(targetVersion)
+        val mBluetoothAdapter = BluetoothSecurityCheck.newInstance(context).check(targetVersion)
         if (mBluetoothAdapter != null) {
             if (targetVersion === DeviceVersion.BLUETOOTH_2 && callback is MeasureBle2ProgressCallback) {
                 bluetoothHandler = Bluetooth2Handler(context, entity, mBluetoothAdapter, callback)

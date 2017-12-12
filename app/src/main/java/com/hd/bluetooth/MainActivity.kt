@@ -23,7 +23,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var version: Int = 2
+    private var version: Int = 4
 
     private val REQUEST_CODE = 10086
 
@@ -88,10 +88,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun addProgress4Callback() = object : MeasureBle4ProgressCallback {
 
-        override fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic, bluetoothLeService: BluetoothLeService) {
-            BL.d("it's now allowed to write")
-        }
-
         override fun startSearch() {
             BL.d(" startSearch current thread:" + Thread.currentThread())
             showResult("==>start search \n")
@@ -99,6 +95,14 @@ class MainActivity : AppCompatActivity() {
 
         override fun searchStatus(success: Boolean) {
             showResult("==>search $success\n")
+        }
+
+        override fun startBinding() {
+            showResult("==>start binding device \n")
+        }
+
+        override fun boundStatus(success: Boolean) {
+            showResult("==>binding device status :$success \n")
         }
 
         override fun startConnect() {
@@ -111,6 +115,10 @@ class MainActivity : AppCompatActivity() {
 
         override fun startRead() {
             showResult("==>start read \n")
+        }
+
+        override fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic, bluetoothLeService: BluetoothLeService) {
+            BL.d("it's now allowed to write")
         }
 
         override fun reading(data: ByteArray) {
@@ -121,16 +129,9 @@ class MainActivity : AppCompatActivity() {
             BL.d("disconnect current thread:" + Thread.currentThread())
             showResult("==>device disconnect \n")
         }
-
-        override fun error(string: String) {
-            showResult("==>measure error : $string \n")
-        }
     }
 
     private fun addProgress2Callback() = object : MeasureBle2ProgressCallback {
-        override fun write(outputStream: OutputStream) {
-            BL.d("it's now allowed to write")
-        }
 
         override fun startSearch() {
             BL.d(" startSearch current thread:" + Thread.currentThread())
@@ -139,6 +140,14 @@ class MainActivity : AppCompatActivity() {
 
         override fun searchStatus(success: Boolean) {
             showResult("==>search $success\n")
+        }
+
+        override fun startBinding() {
+            showResult("==>start binding device \n")
+        }
+
+        override fun boundStatus(success: Boolean) {
+            showResult("==>binding device status :$success \n")
         }
 
         override fun startConnect() {
@@ -153,6 +162,10 @@ class MainActivity : AppCompatActivity() {
             showResult("==>start read \n")
         }
 
+        override fun write(outputStream: OutputStream) {
+            BL.d("it's now allowed to write")
+        }
+
         override fun reading(data: ByteArray) {
             showResult("==>receive data :${Arrays.toString(data)} \n")
         }
@@ -160,10 +173,6 @@ class MainActivity : AppCompatActivity() {
         override fun disconnect() {
             BL.d(" disconnect current thread:" + Thread.currentThread())
             showResult("==>device disconnect \n")
-        }
-
-        override fun error(string: String) {
-            showResult("==>measure error : $string \n")
         }
     }
 

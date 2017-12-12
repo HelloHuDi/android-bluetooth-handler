@@ -36,7 +36,6 @@ abstract class BluetoothBaseScanner {
         callback!!.scan(!continueScan(), device)
         /** scanning to the target device */
         if (continueScan() && sameDevice(device)) {
-            BL.d("found target device is ：${device!!.name} + ${device.bondState}")
             stopScan()
         }
     }

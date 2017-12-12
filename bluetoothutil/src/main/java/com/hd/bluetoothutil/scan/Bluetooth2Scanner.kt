@@ -57,7 +57,6 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
             override fun scan(scanComplete: Boolean, device: BluetoothDevice?) {
                 if (continueScan())
                     if (device != null) {
-                        BL.d("scan device :"+device.name)
                         /** your need bound target device,so,the same device will not be notified here */
                         if (!sameDevice(device))
                             scanComplete(device)
