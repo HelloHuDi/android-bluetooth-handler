@@ -1,11 +1,9 @@
 package com.hd.bluetoothutil.scan
 
 import android.bluetooth.BluetoothDevice
-import android.os.SystemClock
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.callback.ScannerCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
-import com.hd.bluetoothutil.help.BluetoothSecurityCheck
 import com.hd.bluetoothutil.help.BoundBluetoothDevice
 import com.hd.bluetoothutil.utils.BL
 
@@ -49,6 +47,7 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
             override fun boundStatus(discoveryFinished: Boolean, boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
                 if (continueScan())
                     if (!discoveryFinished) {
+                        /** maybe ,target device bound complete*/
                         boundMap.filter { continueScan() }.forEach { scanComplete(it.key) }
                     } else {
                         stopScan()
@@ -56,18 +55,14 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
             }
         }, object : ScannerCallback {
             override fun scan(scanComplete: Boolean, device: BluetoothDevice?) {
-                if (continueScan()) {
+                if (continueScan())
                     if (device != null) {
-                        /** sleep 200 millisecond, completion of device binding*/
-                        if (BluetoothSecurityCheck.newInstance(context!!).checkSameDevice(device, entity)
-                                && device.bondState != BluetoothDevice.BOND_BONDED) {
-                            SystemClock.sleep(200)
-                        }
-                        scanComplete(device)
+                        BL.d("scan device :"+device.name)
+                        /** your need bound target device,so,the same device will not be notified here */
+                        if (!sameDevice(device))
+                            scanComplete(device)
                     }
-                }
             }
         })
     }
-
 }

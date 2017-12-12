@@ -32,13 +32,16 @@ abstract class BluetoothBaseScanner {
     abstract fun stopScan()
 
     protected fun scanComplete(device: BluetoothDevice? = null) {
-        BL.d("found current device is ：$device + $status")
+        BL.d("found current device is ：${device?.name} + $status+${device?.bondState}")
         callback!!.scan(!continueScan(), device)
         /** scanning to the target device */
-        if (continueScan() && BluetoothSecurityCheck.newInstance(context!!).checkSameDevice(device, entity)) {
+        if (continueScan() && sameDevice(device)) {
+            BL.d("found target device is ：${device!!.name} + ${device.bondState}")
             stopScan()
         }
     }
+
+    protected fun sameDevice(device: BluetoothDevice?)=BluetoothSecurityCheck.newInstance(context!!).checkSameDevice(device, entity)
 
     protected fun continueScan() = status == BleMeasureStatus.RUNNING
 

@@ -26,31 +26,39 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         val callback = callbackWeakReference!!.get()
         if (callback != null) {
             when (action) {
-                BluetoothDevice.ACTION_FOUND -> foundDevice(context, intent,callback)
-                BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent,callback)
-                BluetoothDevice.ACTION_BOND_STATE_CHANGED ->
-                    callback.actionBondStateChanged(intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice)
+                BluetoothDevice.ACTION_FOUND -> foundDevice(context, intent, callback)
+                BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent, callback)
+                BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
+                    val device = intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
+                    callback.actionBondStateChanged(device)
+                    if (device.bondState == BluetoothDevice.BOND_BONDED)
+                        callback.actionDiscoveryFinished()
+                }
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
                     val extraState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
                     val extraPreviousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, -1)
                     BL.d("current bluetooth status :$extraState,previous bluetooth status :$extraPreviousState")
                     callback.actionStateChanged(extraState, extraPreviousState)
                 }
-                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> callback.actionDiscoveryFinished(searchComplete.get())
+                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+                    BL.d("ACTION_DISCOVERY_FINISHED")
+                    if (!searchComplete.get())
+                        callback.actionDiscoveryFinished()
+                }
             }
         } else {
-            BL.d("BleBoundProgressCallback is null")
+            BL.e("BleBoundProgressCallback is null")
         }
     }
 
     private fun foundDevice(context: Context, intent: Intent, callback: BleBoundProgressCallback?) {
         val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-        BL.d("found device :" + device)
-        callback?.foundDevice(device)
+        BL.d("found device :" + device.name)
         if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device,
-                callback?.deviceName,callback?.macAddress)) {
+                callback?.deviceName, callback?.macAddress)) {
             startBound(device)
         }
+        callback?.foundDevice(device)
     }
 
     private fun startBound(device: BluetoothDevice) {
@@ -68,14 +76,12 @@ class BleBroadCastReceiver : BroadcastReceiver() {
                 BL.d("start bond device 2")
                 device.createBond()
             }
-        } else {
-            BL.d("target device bond status :" + device.bondState)
         }
     }
 
     private fun bondDevice(intent: Intent, callback: BleBoundProgressCallback?) {
         val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-        BL.d("bond device ,set pin :" + device + "=" + callback?.deviceName)
+        BL.d("bond device ,set pin :" + device.name + "=" + callback?.deviceName)
         if (device != null && device.name != null && device.name == callback?.deviceName) {
             abortBroadcast()
             setPain(0, device)
@@ -90,7 +96,7 @@ class BleBroadCastReceiver : BroadcastReceiver() {
             BL.d("automatic matching count :$position=$painCode")
             if (painCode != null) {
                 pair = ClsUtils.setPin(device.javaClass, device, painCode)
-                BL.d("bond device success :" + pair + "automatic matching complete")
+                BL.d("bond device success :$pair,automatic matching complete")
             }
         } catch (ignored: Exception) {
             pair = false

@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
+import android.os.Build
 import android.os.SystemClock
 import com.hd.bluetoothutil.R
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
@@ -67,11 +68,15 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
     override fun startConnect() {
         BL.d("start connect device : $targetDevice + ${targetDevice!!.bondState}")
         if (targetDevice!!.bondState != BluetoothDevice.BOND_BONDED) {
-            BL.e("device is not bound ")
-            SystemClock.sleep(100)
-        }
-        if (targetDevice!!.bondState != BluetoothDevice.BOND_BONDED) {
-            callback.error(context.resources.getString(R.string.binding_failed))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                /** manual binding*/
+                BL.d("manual binding")
+                if(targetDevice!!.createBond()){
+                    Thread(ConnectRunnable(targetDevice!!)).start()
+                }else{
+                    callback.error(context.resources.getString(R.string.binding_failed))
+                }
+            }
         } else {
             Thread(ConnectRunnable(targetDevice!!)).start()
         }

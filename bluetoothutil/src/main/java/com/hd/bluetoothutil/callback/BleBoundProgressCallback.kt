@@ -46,8 +46,6 @@ interface BleBoundProgressCallback {
 
     /**
      * bluetooth scan finished
-
-     * @param searchComplete is true if found target device
      */
-    fun actionDiscoveryFinished(searchComplete: Boolean)
+    fun actionDiscoveryFinished()
 }

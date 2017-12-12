@@ -50,14 +50,16 @@ class BoundBluetoothDevice constructor(val context: Context) {
             override val macAddress: String? get() = entity.macAddress
 
             override fun foundDevice(bluetoothDevice: BluetoothDevice) {
-                BL.d("notify found device :" + bluetoothDevice)
+                BL.d("notify found device :" + bluetoothDevice.name+"="+bluetoothDevice.address)
                 callback2?.scan(false, bluetoothDevice)
             }
 
             override fun actionBondStateChanged(bluetoothDevice: BluetoothDevice) {
                 BL.d("device bond state changed :" + bluetoothDevice.name + "==" + bluetoothDevice.bondState)
-                boundMap.put(bluetoothDevice, bluetoothDevice.bondState == BluetoothDevice.BOND_BONDED)
-                callback1.boundStatus(false, boundMap)
+                if(bluetoothDevice.bondState == BluetoothDevice.BOND_BONDED) {
+                    boundMap.put(bluetoothDevice, true)
+                    callback1.boundStatus(false, boundMap)
+                }
             }
 
             override fun actionStateChanged(extraState: Int, extraPreviousState: Int) {
@@ -69,13 +71,7 @@ class BoundBluetoothDevice constructor(val context: Context) {
                 }
             }
 
-            override fun actionDiscoveryFinished(searchComplete: Boolean) {
-                BL.d("actionDiscoveryFinished:" + searchComplete)
-                BleBroadCastReceiver.clear()
-                response()
-            }
-
-            private fun response() {
+            override fun actionDiscoveryFinished() {
                 if (boundMap.size > 0) {
                     boundMap.clear()
                 }
