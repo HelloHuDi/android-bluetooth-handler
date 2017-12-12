@@ -1,1 +1,1 @@
-include ':app', ':bluetoothutil'
+include ':app', ':bluetoothutil', ':abluetoothtools'
