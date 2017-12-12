@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/scan2"
+        android:orderInCategory="100"
+        android:title="@string/scan_bluetooth_2"
+        app:showAsAction="withText"/>
+
+    <item
+        android:id="@+id/scan4"
+        android:orderInCategory="100"
+        android:title="@string/scan_bluetooth_4"
+        app:showAsAction="withText"/>
+
+
+</menu>

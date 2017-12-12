@@ -30,6 +30,7 @@ dependencies {
     //noinspection GradleCompatible
     compile lib_appcompat
     compile lib_recyclerview
+    compile 'com.github.baoyachi:StepView:1.9'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.anko:anko:$anko_version"
     testCompile 'junit:junit:4.12'
