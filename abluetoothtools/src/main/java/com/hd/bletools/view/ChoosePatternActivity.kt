@@ -101,8 +101,7 @@ class ChoosePatternActivity : BaseActivity() {
         }
         commonAdapter.setOnItemClickListener(object : MultiItemTypeAdapter.OnItemClickListener {
             override fun onItemLongClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int): Boolean {
-                showBluetoothDeviceDetails(position)
-                return true
+                return false
             }
 
             override fun onItemClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int) {
@@ -115,10 +114,6 @@ class ChoosePatternActivity : BaseActivity() {
             }
         })
         return commonAdapter
-    }
-
-    private fun showBluetoothDeviceDetails(position: Int) {
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -5,13 +5,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/item_bg"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/small_size">
 
     <TextView
         android:id="@+id/tv_details"
-        android:layout_width="match_parent"
-        android:textColor="@android:color/white"
-        android:textSize="16dp"
-        android:paddingBottom="10dp"
-        android:layout_height="wrap_content"/>
+        style="@style/text_common_style"/>
 </LinearLayout>

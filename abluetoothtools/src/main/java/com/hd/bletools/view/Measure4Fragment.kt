@@ -3,6 +3,7 @@ package com.hd.bletools.view
 import android.bluetooth.BluetoothGattCharacteristic
 import com.hd.bletools.R
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
+import com.hd.bluetoothutil.callback.MeasureProgressCallback
 import com.hd.bluetoothutil.driver.BluetoothLeService
 
 /**
@@ -11,12 +12,16 @@ import com.hd.bluetoothutil.driver.BluetoothLeService
  */
 class Measure4Fragment : MeasureFragment(), MeasureBle4ProgressCallback {
 
+    override fun setMeasureProgressCallback(): MeasureProgressCallback {
+        return this
+    }
+
     override fun setLayoutId(): Int {
         return R.layout.fragment_measure_4
     }
 
     override fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic, bluetoothLeService: BluetoothLeService) {
-
+        this.bluetoothGattCharacteristic = bluetoothGattCharacteristic
     }
 
 }
