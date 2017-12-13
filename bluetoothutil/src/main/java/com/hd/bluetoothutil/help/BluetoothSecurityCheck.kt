@@ -46,9 +46,17 @@ class BluetoothSecurityCheck private constructor(private var context: Context, v
     fun checkSameDevice(searchDevice: BluetoothDevice?, targetDeviceName: String?, targetDeviceAddress: String?): Boolean {
         return if (searchDevice != null) {
             if (targetDeviceAddress.isNullOrEmpty()) {
-                searchDevice.name == targetDeviceName
+                if (searchDevice.name.isNullOrEmpty()) {
+                    false
+                } else {
+                    searchDevice.name == targetDeviceName
+                }
             } else {
-                searchDevice.name == targetDeviceName && searchDevice.address == targetDeviceAddress
+                if (targetDeviceName.isNullOrEmpty()) {
+                    searchDevice.address == targetDeviceAddress
+                } else {
+                    searchDevice.name == targetDeviceName && searchDevice.address == targetDeviceAddress
+                }
             }
         } else {
             false

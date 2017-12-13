@@ -1,6 +1,7 @@
 package com.hd.bluetoothutil
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
@@ -33,16 +34,16 @@ object BluetoothController {
         entity = null
     }
 
-    fun init(context: Context, entity: BluetoothDeviceEntity,
+    fun init(context: Context, entity: BluetoothDeviceEntity,device: BluetoothDevice?=null,
              callback: MeasureProgressCallback): BluetoothController {
         reset()
-        initBlueHandler(context.applicationContext, entity, callback)
+        initBlueHandler(context.applicationContext, entity,device, callback)
         this.entity = entity
         this.callback = callback
         return this@BluetoothController
     }
 
-    private fun initBlueHandler(context: Context, entity: BluetoothDeviceEntity, callback: MeasureProgressCallback) {
+    private fun initBlueHandler(context: Context, entity: BluetoothDeviceEntity, device: BluetoothDevice?=null,callback: MeasureProgressCallback) {
         BL.d("BluetoothController initBlueHandler")
         val targetVersion = entity.version
         val mBluetoothAdapter = BluetoothSecurityCheck.newInstance(context).check(targetVersion)
@@ -52,6 +53,7 @@ object BluetoothController {
             } else if (targetVersion === DeviceVersion.BLUETOOTH_4 && callback is MeasureBle4ProgressCallback) {
                 bluetoothHandler = Bluetooth4Handler(context, entity, mBluetoothAdapter, callback)
             }
+            bluetoothHandler?.initDevice(device)
         }
     }
 

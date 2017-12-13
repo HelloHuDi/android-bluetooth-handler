@@ -7,6 +7,7 @@ import com.hd.bluetoothutil.callback.MeasureProgressCallback
 import com.hd.bluetoothutil.callback.ScannerCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
+import com.hd.bluetoothutil.config.DeviceVersion
 import com.hd.bluetoothutil.help.BluetoothSecurityCheck
 import com.hd.bluetoothutil.scan.Scanner
 import com.hd.bluetoothutil.utils.BL
@@ -31,6 +32,10 @@ abstract class BluetoothHandler(val context: Context, val entity: BluetoothDevic
 
     protected abstract fun startConnect()
 
+    fun initDevice(device: BluetoothDevice?) {
+        this.targetDevice = device
+    }
+
     fun startMeasure() {
         if (status != BleMeasureStatus.RUNNING) {
             status = BleMeasureStatus.RUNNING
@@ -51,7 +56,14 @@ abstract class BluetoothHandler(val context: Context, val entity: BluetoothDevic
 
     protected fun startScan() {
         callback.startSearch()
-        Scanner.scan(context, bluetoothAdapter, entity, this)
+        if (targetDevice != null && //
+                (entity.version == DeviceVersion.BLUETOOTH_4 ||// bluetooth 4.0
+                        (entity.version == DeviceVersion.BLUETOOTH_2 //  bluetooth 2.0 and bound
+                                && targetDevice!!.bondState == BluetoothDevice.BOND_BONDED))) {
+            scan(true, targetDevice)
+        } else {
+            Scanner.scan(context, bluetoothAdapter, entity, this)
+        }
     }
 
     override fun scan(scanComplete: Boolean, device: BluetoothDevice?) {
