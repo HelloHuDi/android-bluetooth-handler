@@ -30,13 +30,13 @@ import kotlinx.android.synthetic.main.activity_choose_pattern.*
 
 class ChoosePatternActivity : BaseActivity() {
 
-    private val devicesList = mutableListOf<BluetoothDevice>()
-
     private val REQUEST_CODE = 10086
 
     private var permission_granted = false
 
     private var scan_version = DeviceVersion.BLUETOOTH_2
+
+    private val devicesList = mutableListOf<BluetoothDevice>()
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -55,9 +55,23 @@ class ChoosePatternActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_pattern)
         checkPermissionGranted()
+        addRefresh()
+        addAdapter()
+    }
+
+    private fun addAdapter() {
         rv_devices.layoutManager = LinearLayoutManager(this)
         rv_devices.itemAnimator = DefaultItemAnimator()
         rv_devices.adapter = commonAdapter()
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private fun addRefresh() {
+        sw_refresh.setColorSchemeResources(R.color.colorAccent)
+        sw_refresh.setOnRefreshListener({
+            scan()
+            sw_refresh.isRefreshing = false
+        })
     }
 
     private fun checkPermissionGranted() {
@@ -87,7 +101,8 @@ class ChoosePatternActivity : BaseActivity() {
         }
         commonAdapter.setOnItemClickListener(object : MultiItemTypeAdapter.OnItemClickListener {
             override fun onItemLongClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int): Boolean {
-                return false
+                showBluetoothDeviceDetails(position)
+                return true
             }
 
             override fun onItemClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int) {
@@ -100,6 +115,10 @@ class ChoosePatternActivity : BaseActivity() {
             }
         })
         return commonAdapter
+    }
+
+    private fun showBluetoothDeviceDetails(position: Int) {
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -116,9 +135,14 @@ class ChoosePatternActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    /** eliminating duplication equipment*/
+    private val devicesSet = mutableSetOf<BluetoothDevice>()
+
+    /** start scan device */
     private fun scan() {
         if (permission_granted) {
             devicesList.clear()
+            devicesSet.clear()
             rv_devices.adapter.notifyDataSetChanged()
             snackbar(if (scan_version == DeviceVersion.BLUETOOTH_2) R.string.scan_bluetooth_2 else R.string.scan_bluetooth_4)
             Scanner.scan(this, entity = BluetoothDeviceEntity(version = scan_version),
@@ -126,7 +150,9 @@ class ChoosePatternActivity : BaseActivity() {
                         override fun scan(scanComplete: Boolean, device: BluetoothDevice?) {
                             BL.d("scan : $scanComplete = $device")
                             if (!scanComplete && device != null) {
-                                devicesList.add(device)
+                                devicesList.clear()
+                                devicesSet.add(device)
+                                devicesList.addAll(devicesSet)
                                 rv_devices.adapter.notifyDataSetChanged()
                             } else {
                                 snackbar(R.string.scan_complete)
@@ -142,3 +168,4 @@ class ChoosePatternActivity : BaseActivity() {
         Snackbar.make(rv_devices, resources.getString(strId), Snackbar.LENGTH_LONG).show()
     }
 }
+

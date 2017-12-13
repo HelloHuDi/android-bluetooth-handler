@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     private fun measure() {
         val entity = addEntity()
         showResult("==>current device entity : " + entity.toString() + "\n")
-        BluetoothController.init(this, entity, addCallback()).startMeasure()
+        BluetoothController.init(this, entity, callback = addCallback()).startMeasure()
     }
 
     override fun onStop() {
