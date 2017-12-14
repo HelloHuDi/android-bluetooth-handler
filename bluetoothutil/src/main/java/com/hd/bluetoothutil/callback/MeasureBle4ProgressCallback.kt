@@ -9,10 +9,10 @@ import com.hd.bluetoothutil.driver.BluetoothLeService
  * Created by hd on 2017/5/24.
  *
  */
-
 interface MeasureBle4ProgressCallback :MeasureProgressCallback{
 
-    /**it will be called many times if you do not specify a special UUID[BluetoothDeviceEntity.targetCharacteristicUuid]*/
-    fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic, bluetoothLeService: BluetoothLeService)
+    /**it will be called many times if you do not specify a special UUID
+     * [BluetoothDeviceEntity.targetCharacteristicUuid]*/
+    fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic?=null, bluetoothLeService: BluetoothLeService)
 
 }

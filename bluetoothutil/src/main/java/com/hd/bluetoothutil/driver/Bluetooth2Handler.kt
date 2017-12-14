@@ -105,7 +105,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 reconnected()
                 return
             } else {
-                callback.connectStatus(true)
+                if (status == BleMeasureStatus.RUNNING) callback.connectStatus(true)
             }
             try {
                 inputStream = bluetoothSocket!!.inputStream
@@ -159,16 +159,17 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         private var reconnected_number = default_reconnected_number
 
         private fun reconnected() {
-            if (status === BleMeasureStatus.RUNNING && reconnected_number > 0 && entity.reconnected) {
-                reconnected_number--
-                BL.d("reconnected:" + reconnected_number)
-                closeSocket()
-                SystemClock.sleep(200)
-                run()
-            } else {
-                callback.connectStatus(false)
-                callback.disconnect()
-            }
+            if (status == BleMeasureStatus.RUNNING)
+                if (reconnected_number > 0 && entity.reconnected) {
+                    reconnected_number--
+                    BL.d("reconnected:" + reconnected_number)
+                    closeSocket()
+                    SystemClock.sleep(200)
+                    run()
+                } else {
+                    callback.connectStatus(false)
+                    callback.disconnect()
+                }
         }
     }
 

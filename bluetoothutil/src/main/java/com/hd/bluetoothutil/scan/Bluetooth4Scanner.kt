@@ -7,7 +7,6 @@ import android.bluetooth.le.ScanResult
 import android.os.Build
 import android.os.Handler
 import android.support.annotation.RequiresApi
-import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.utils.BL
 
 
@@ -28,7 +27,7 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
             mBluetoothLeScanner = bluetoothAdapter!!.bluetoothLeScanner
             BL.d("=" + bluetoothAdapter!!.isOffloadedFilteringSupported + "=" + mBluetoothLeScanner)
         }
-        handler.postDelayed(stopRunnable, 30000)
+        handler.postDelayed(stopRunnable, 10000)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mBluetoothLeScanner != null) {
             mBluetoothLeScanner!!.startScan(mScanCallback)
         } else {
@@ -37,13 +36,11 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
     }
 
     private fun stopRunnable() = Runnable {
-        BL.d("stop scan ble after 30000 millisecond")
+        BL.d("stop scan ble after 10000 millisecond")
         stopScan()
     }
 
     override fun stopScan() {
-        BL.d("stop scan ")
-        status = BleMeasureStatus.STOPPING
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mBluetoothLeScanner != null) {
             BL.d("$mBluetoothLeScanner=$mScanCallback")
             mBluetoothLeScanner?.stopScan(mScanCallback)
@@ -52,7 +49,6 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
         }
         handler.removeCallbacks(stopRunnable)
         scanComplete()
-        status = BleMeasureStatus.STOPPED
     }
 
     private val leScanCallback = BluetoothAdapter.LeScanCallback { bluetoothDevice, _, _ ->

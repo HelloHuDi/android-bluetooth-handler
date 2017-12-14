@@ -2,9 +2,11 @@
     <string name="app_name">蓝牙调试</string>
     <string name="scan_bluetooth_2">scan bluetooth 2.0</string>
     <string name="scan_bluetooth_4">scan bluetooth 4.0</string>
+    <string name="stop_scan">stop scan</string>
     <string name="start_measure">start measure</string>
     <string name="stop_measure">stop measure</string>
     <string name="send_data">send data</string>
     <string name="scan_complete">SCAN COMPLETE</string>
-    <string name="permission_failure">failure to apply for permission</string>
+    <string name="select_uuid_title">SELECT ALL UUID</string>
+    <string name="permission_failure">permission reject</string>
 </resources>

@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sv"
     android:layout_width="match_parent"
+    android:scrollbarStyle="outsideInset"
+    android:padding="@dimen/small_size"
     android:layout_height="match_parent">
 
     <TextView

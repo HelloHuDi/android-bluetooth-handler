@@ -20,6 +20,10 @@ class Measure2Fragment : MeasureFragment(), MeasureBle2ProgressCallback {
         return R.layout.fragment_measure_2
     }
 
+    override fun initView() {
+
+    }
+
     override fun write(outputStream: OutputStream) {
         this.outputStream = outputStream
     }

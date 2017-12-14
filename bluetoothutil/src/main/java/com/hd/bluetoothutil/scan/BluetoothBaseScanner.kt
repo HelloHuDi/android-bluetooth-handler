@@ -31,16 +31,27 @@ abstract class BluetoothBaseScanner {
 
     abstract fun stopScan()
 
+    fun terminationScan() {
+        if (!continueScan()) return
+        BL.d("stop scan")
+        status = BleMeasureStatus.STOPPING
+        stopScan()
+        status = BleMeasureStatus.STOPPED
+    }
+
     protected fun scanComplete(device: BluetoothDevice? = null) {
-        BL.d("found current device is ：${device?.name} + $status+${device?.bondState}")
-        callback!!.scan(!continueScan(), device)
+        BL.d("found current device is ：${device?.name} + $status+${device?.bondState}+${continueScan()}")
+        callback?.scan(!continueScan(), device)
         /** scanning to the target device */
-        if (continueScan() && sameDevice(device)) {
-            stopScan()
+        if (continueScan()) {
+            if (sameDevice(device))
+                terminationScan()
+        } else {
+            callback = null
         }
     }
 
-    protected fun sameDevice(device: BluetoothDevice?)=BluetoothSecurityCheck.newInstance(context!!).checkSameDevice(device, entity)
+    protected fun sameDevice(device: BluetoothDevice?) = BluetoothSecurityCheck.newInstance(context!!).checkSameDevice(device, entity)
 
     protected fun continueScan() = status == BleMeasureStatus.RUNNING
 

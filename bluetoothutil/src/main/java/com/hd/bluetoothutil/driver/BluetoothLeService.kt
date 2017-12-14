@@ -6,14 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
+import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.utils.BL
 import java.util.*
 
 /**
- * Created by hd on 2017/11/24 0008.
- *
- *
- * 蓝牙4.0服务
+ * For a given BLE device, this Activity provides the user interface to connect, display data,
+ * and display GATT services and characteristics supported by the device.  The Activity
+ * communicates with {@code BluetoothLeService}, which in turn interacts with the
+ * Bluetooth LE API.
  */
 class BluetoothLeService : Service() {
     private var mBluetoothAdapter: BluetoothAdapter? = null
@@ -128,7 +130,6 @@ class BluetoothLeService : Service() {
             intent.putExtra(EXTRA_DATA, intToBytes(heartRate))
             sendBroadcast(intent)
         } else {
-            // For all other profiles, writes the data formatted in HEX.
             val data = characteristic.value
             BL.d("receive bluetooth result ：" + Arrays.toString(data))
             if (data != null && data.isNotEmpty()) {
@@ -305,6 +306,66 @@ class BluetoothLeService : Service() {
                 descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
             }
             mBluetoothGatt!!.writeDescriptor(descriptor)
+        }
+    }
+
+    /** global setting*/
+    fun setNotification(entity: BluetoothDeviceEntity? = null, callback: MeasureBle4ProgressCallback? = null) {
+        val thread = Thread(Runnable {
+            val setNotifition = booleanArrayOf(false)
+            // Show all the supported services and characteristics on the user interface.
+            val supportedGattServices = supportedGattServices
+            if (supportedGattServices != null) {
+                for (bluetoothGattService in supportedGattServices) {
+                    if (setNotifition[0])
+                        return@Runnable
+                    for (bluetoothGattCharacteristic in bluetoothGattService.characteristics) {
+                        if (setNotifition[0])
+                            return@Runnable
+                        if (bluetoothGattCharacteristic == null)
+                            continue
+                        setNotifition(entity, bluetoothGattCharacteristic, setNotifition, callback)
+                    }
+                }
+            }
+        })
+        thread.start()
+    }
+
+    private fun setNotifition(entity: BluetoothDeviceEntity? = null, bluetoothGattCharacteristic: BluetoothGattCharacteristic, //
+                              setNotifition: BooleanArray, callback: MeasureBle4ProgressCallback? = null) {
+        BL.d("start write data to device: " + Arrays.toString(bluetoothGattCharacteristic.value) //
+                + "==" + entity?.targetCharacteristicUuid + "==" + bluetoothGattCharacteristic.uuid)
+        val hasTarget = entity?.targetCharacteristicUuid != null && bluetoothGattCharacteristic.uuid == entity.targetCharacteristicUuid
+        if (entity?.targetCharacteristicUuid != null) {
+            if (hasTarget) {
+                callback?.write(bluetoothGattCharacteristic, this)
+                setCharacteristicNotification(bluetoothGattCharacteristic, true)
+                setNotifition[0] = true
+            } else {
+                BL.d("do not set notification :" + bluetoothGattCharacteristic.uuid)
+            }
+        } else {
+            callback?.write(bluetoothGattCharacteristic, this)
+            setCharacteristicNotification(bluetoothGattCharacteristic, true)
+        }
+    }
+
+    fun selectiveNotification(currentCharacteristic: BluetoothGattCharacteristic,//
+                                      lastNotifyCharacteristic: Array<BluetoothGattCharacteristic?>) {
+        val charaProp = currentCharacteristic.properties
+        if (charaProp or BluetoothGattCharacteristic.PROPERTY_READ > 0) {
+            // If there is an active notification on a characteristic, clear
+            // it first so it doesn't update the data field on the user interface.
+            if (lastNotifyCharacteristic[0] != null) {
+                setCharacteristicNotification(lastNotifyCharacteristic[0]!!, false)
+                lastNotifyCharacteristic[0] = null
+            }
+            readCharacteristic(currentCharacteristic)
+        }
+        if (charaProp or BluetoothGattCharacteristic.PROPERTY_NOTIFY > 0) {
+            lastNotifyCharacteristic[0] = currentCharacteristic
+            setCharacteristicNotification(currentCharacteristic, true)
         }
     }
 

@@ -34,7 +34,7 @@ class ChoosePatternActivity : BaseActivity() {
 
     private var permission_granted = false
 
-    private var scan_version = DeviceVersion.BLUETOOTH_2
+    private var scan_version = DeviceVersion.BLUETOOTH_4
 
     private val devicesList = mutableListOf<BluetoothDevice>()
 
@@ -46,7 +46,7 @@ class ChoosePatternActivity : BaseActivity() {
                 scan()
             } else {
                 permission_granted = false
-                snackbar(R.string.permission_failure)
+                snack(R.string.permission_failure)
             }
         }
     }
@@ -57,6 +57,11 @@ class ChoosePatternActivity : BaseActivity() {
         checkPermissionGranted()
         addRefresh()
         addAdapter()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Scanner.stopScan()
     }
 
     private fun addAdapter() {
@@ -79,7 +84,7 @@ class ChoosePatternActivity : BaseActivity() {
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission_group.LOCATION)) {
                 permission_granted = false
-                snackbar(R.string.permission_failure)
+                snack(R.string.permission_failure)
             } else {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE)
@@ -90,7 +95,7 @@ class ChoosePatternActivity : BaseActivity() {
     }
 
     private fun commonAdapter(): CommonAdapter<BluetoothDevice> {
-        val commonAdapter = object : CommonAdapter<BluetoothDevice>(this, R.layout.item, devicesList) {
+        val commonAdapter = object : CommonAdapter<BluetoothDevice>(this, R.layout.item_device, devicesList) {
             @SuppressLint("SetTextI18n")
             override fun convert(holder: ViewHolder?, t: BluetoothDevice?, position: Int) {
                 if (holder != null && t != null) {
@@ -105,6 +110,8 @@ class ChoosePatternActivity : BaseActivity() {
             }
 
             override fun onItemClick(view: View?, holder: RecyclerView.ViewHolder?, position: Int) {
+                BL.d("commonAdapter onItemClick")
+                Scanner.stopScan()
                 val intent = Intent(this@ChoosePatternActivity, MeasureActivity::class.java)
                 val bundle = Bundle()
                 bundle.putParcelable("device", devicesList[position])
@@ -123,10 +130,16 @@ class ChoosePatternActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.scan2 -> scan_version = DeviceVersion.BLUETOOTH_2
-            R.id.scan4 -> scan_version = DeviceVersion.BLUETOOTH_4
+            R.id.scan2 -> {
+                scan_version = DeviceVersion.BLUETOOTH_2
+                scan()
+            }
+            R.id.scan4 -> {
+                scan_version = DeviceVersion.BLUETOOTH_4
+                scan()
+            }
+            R.id.stopScan -> Scanner.stopScan()
         }
-        scan()
         return super.onOptionsItemSelected(item)
     }
 
@@ -139,18 +152,18 @@ class ChoosePatternActivity : BaseActivity() {
             devicesList.clear()
             devicesSet.clear()
             rv_devices.adapter.notifyDataSetChanged()
-            snackbar(if (scan_version == DeviceVersion.BLUETOOTH_2) R.string.scan_bluetooth_2 else R.string.scan_bluetooth_4)
+            snack(if (scan_version == DeviceVersion.BLUETOOTH_2) R.string.scan_bluetooth_2 else R.string.scan_bluetooth_4)
             Scanner.scan(this, entity = BluetoothDeviceEntity(version = scan_version),
                     callback = object : ScannerCallback {
                         override fun scan(scanComplete: Boolean, device: BluetoothDevice?) {
-                            BL.d("scan : $scanComplete = $device")
+                            BL.d("scan : $scanComplete = ${device?.name}")
                             if (!scanComplete && device != null) {
                                 devicesList.clear()
                                 devicesSet.add(device)
                                 devicesList.addAll(devicesSet)
                                 rv_devices.adapter.notifyDataSetChanged()
                             } else {
-                                snackbar(R.string.scan_complete)
+                                snack(R.string.scan_complete)
                             }
                         }
                     })
@@ -159,7 +172,7 @@ class ChoosePatternActivity : BaseActivity() {
         }
     }
 
-    private fun snackbar(@StringRes strId: Int) {
+    private fun snack(@StringRes strId: Int) {
         Snackbar.make(rv_devices, resources.getString(strId), Snackbar.LENGTH_LONG).show()
     }
 }

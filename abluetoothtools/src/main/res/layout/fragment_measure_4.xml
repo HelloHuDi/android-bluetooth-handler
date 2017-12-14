@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <Spinner
+        android:id="@+id/spUUID"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/UUID_item_row_height"/>
+
+    <View
+        android:id="@+id/fakeShadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sheet_top_shadow_height"
+        android:background="@drawable/shadow"/>
+
+    <include
+        layout="@layout/result"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+</LinearLayout>

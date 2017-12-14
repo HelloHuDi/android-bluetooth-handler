@@ -70,9 +70,9 @@ abstract class BluetoothHandler(val context: Context, val entity: BluetoothDevic
         BL.d("scan result :$scanComplete+$device")
         if (!scanComplete) {
             if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device, entity)) {
+                Scanner.stopScan()
                 targetDevice = device
                 notificationSearchStatus()
-                startConnect()
             }
         } else {
             notificationSearchStatus()
@@ -89,6 +89,7 @@ abstract class BluetoothHandler(val context: Context, val entity: BluetoothDevic
             } else {
                 callback.searchStatus(true)
                 callback.startBinding()
+                startConnect()
             }
         }
     }
