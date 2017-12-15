@@ -57,11 +57,11 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        version = arguments.getSerializable("version") as DeviceVersion
-        device = arguments.getParcelable("device")
-        entity.deviceName = device!!.name
-        entity.version = version
-        entity.macAddress = device!!.address
+//        version = arguments.getSerializable("version") as DeviceVersion
+//        device = arguments.getParcelable("device")
+//        entity.deviceName = device!!.name
+//        entity.version = version
+//        entity.macAddress = device!!.address
         BL.d("measure entity :$entity")
     }
 
@@ -72,7 +72,7 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
     override fun onResume() {
         super.onResume()
         initView()
-        startMeasure()
+//        startMeasure()
     }
 
     override fun onPause() {
@@ -87,8 +87,8 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
         tvResult.text = ""
         showResult("==>$entity")
         snack(R.string.start_measure)
-        initWriteThread()
-        thread { BluetoothController.init(activity.applicationContext, entity, device, callback).startMeasure() }.start()
+//        initWriteThread()
+//        thread { BluetoothController.init(activity.applicationContext, entity, device, callback).startMeasure() }
     }
 
     fun stopMeasure() {
@@ -101,6 +101,10 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
 
     fun sendData(data: ByteArray) {
         dataQueue.put(data)
+    }
+
+    fun sendData(arrayList: ArrayList<ByteArray>) {
+        arrayList.forEach {  dataQueue.put(it) }
     }
 
     private fun initWriteThread() {
@@ -134,7 +138,11 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
     }
 
     private fun snack(@StringRes strId: Int) {
-        Snackbar.make(tvResult, resources.getString(strId), Snackbar.LENGTH_LONG).show()
+        snack(resources.getString(strId))
+    }
+
+    fun snack(string: String) {
+        Snackbar.make(sv, string, Snackbar.LENGTH_LONG).show()
     }
 
     override fun startSearch() {

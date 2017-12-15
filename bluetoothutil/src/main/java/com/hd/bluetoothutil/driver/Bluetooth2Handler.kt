@@ -55,10 +55,14 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         closeSocket()
     }
 
+    private var socketConnect = false
+
     private fun closeSocket() {
         try {
-            if (bluetoothSocket != null && bluetoothSocket!!.isConnected)
+            if (bluetoothSocket != null && bluetoothSocket!!.isConnected && socketConnect) {
+                BL.d("close bluetoothSocket")
                 bluetoothSocket!!.close()
+            }
         } catch (e: IOException) {
             BL.d("bluetoothSocket close error :" + e)
         }
@@ -81,7 +85,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         }
     }
 
-    private inner class ConnectRunnable internal constructor(private val device: BluetoothDevice) : Runnable {
+    private inner class ConnectRunnable(private val device: BluetoothDevice) : Runnable {
 
         init {
             BL.d("connect runnable:$device=$status")
@@ -100,13 +104,21 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 return
             }
             callback.startConnect()
-            if (!BluetoothConnector.newInstance().connectSocket(device, bluetoothSocket!!)) {
-                BL.d("connect again time ：$reconnected_number=$status")
+            socketConnect=false
+            try {
+                if (!BluetoothConnector.newInstance().connectSocket(device, bluetoothSocket!!)) {
+                    BL.d("connect again time ：$reconnected_number=$status")
+                    reconnected()
+                    return
+                } else {
+                    if (status == BleMeasureStatus.RUNNING) callback.connectStatus(true)
+                }
+            } catch (e: Exception) {
+                BL.d("connect socket error ：$e")
                 reconnected()
                 return
-            } else {
-                if (status == BleMeasureStatus.RUNNING) callback.connectStatus(true)
             }
+            socketConnect=true
             try {
                 inputStream = bluetoothSocket!!.inputStream
             } catch (e: IOException) {

@@ -2,8 +2,6 @@
 <resources>
     <dimen name="small_size">16dp</dimen>
     <dimen name="text_size">16sp</dimen>
-    <dimen name="bottom_sheet_height">300dp</dimen>
-    <dimen name="peek_height">100dp</dimen>
     <dimen name="sheet_top_shadow_height">8dp</dimen>
     <dimen name="UUID_item_row_height">60dp</dimen>
 </resources>

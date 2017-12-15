@@ -5,8 +5,16 @@
     <string name="stop_scan">stop scan</string>
     <string name="start_measure">start measure</string>
     <string name="stop_measure">stop measure</string>
-    <string name="send_data">send data</string>
+    <string name="control_bottom_bar">control bottom bar</string>
+    <string name="send_data">SEND</string>
     <string name="scan_complete">SCAN COMPLETE</string>
     <string name="select_uuid_title">SELECT ALL UUID</string>
     <string name="permission_failure">permission reject</string>
+    <string name="send_data_hint">字符模式直接输入,如:Hello World,HEX模式用空格分割,如:1E 10 20 F0</string>
+    <string name="send_data_is_null">要发送的十六进制数据为空</string>
+    <string name="translate_coding_failure">转换编码失败</string>
+    <string name="greater_than_ff">%s 大于0xff</string>
+    <string name="is_not_hex">%s 不是十六进制数</string>
+    <string name="send_hex">HEX发送</string>
+    <string name="receive_hex">HEX接收</string>
 </resources>
