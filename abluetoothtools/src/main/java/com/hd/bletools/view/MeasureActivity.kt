@@ -1,12 +1,15 @@
 package com.hd.bletools.view
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import com.hd.bletools.R
+import com.hd.bluetoothutil.config.DeviceVersion
+import com.hd.bluetoothutil.utils.BL
 import kotlinx.android.synthetic.main.activity_measure.*
 import kotlinx.android.synthetic.main.send_data_sheet.*
 import java.io.UnsupportedEncodingException
@@ -26,21 +29,18 @@ class MeasureActivity : BaseActivity() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measure)
-//        val bundle = intent.getBundleExtra("bundle") as Bundle
-//        val version = bundle.getSerializable("version") as DeviceVersion
-//        val device = bundle.getParcelable<BluetoothDevice>("device")
-//        BL.d("$version+${device!!.name}")
-//        measureFragment = if (version == DeviceVersion.BLUETOOTH_2) {
-//            Measure2Fragment()
-//        } else {
-//            Measure4Fragment()
-//        }
-//        measureFragment!!.arguments = bundle
-
-        measureFragment = Measure2Fragment()
-        fragmentManager.beginTransaction().replace(R.id.container, measureFragment).commit()
-        cb_hex_rev.setOnCheckedChangeListener { p0, p1 ->
+        val bundle = intent.getBundleExtra("bundle") as Bundle
+        val version = bundle.getSerializable("version") as DeviceVersion
+        val device = bundle.getParcelable<BluetoothDevice>("device")
+        BL.d("$version+${device!!.name}")
+        measureFragment = if (version == DeviceVersion.BLUETOOTH_2) {
+            Measure2Fragment()
+        } else {
+            Measure4Fragment()
         }
+        measureFragment!!.arguments = bundle
+        fragmentManager.beginTransaction().replace(R.id.container, measureFragment).commit()
+        cb_hex_rev.setOnCheckedChangeListener { _, p1 -> measureFragment?.hexShow(p1) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -72,15 +72,15 @@ class MeasureActivity : BaseActivity() {
             if (ins.isNotEmpty()) {
                 sendHexData(ins, arrayList)
             } else {
-                receiveDataWithLineFeed(resources.getString(R.string.send_data_is_null))
+                hint(resources.getString(R.string.send_data_is_null))
             }
         } else {
             try {
                 arrayList.add(ins.toByteArray(charset("UTF-8")))
-                writeData(arrayList)
+                sendData(arrayList)
             } catch (e: UnsupportedEncodingException) {
                 e.printStackTrace()
-                receiveDataWithLineFeed(resources.getString(R.string.translate_coding_failure))
+                hint(resources.getString(R.string.translate_coding_failure))
             }
         }
     }
@@ -94,28 +94,28 @@ class MeasureActivity : BaseActivity() {
             try {
                 val d = Integer.parseInt(hex, 16)
                 if (d > 255) {
-                    receiveDataWithLineFeed(String.format(resources.getString(R.string.greater_than_ff), hex))
+                    hint(String.format(resources.getString(R.string.greater_than_ff), hex))
                     okflag = false
                 } else {
                     bytes[index] = d.toByte()
                 }
             } catch (e: NumberFormatException) {
-                receiveDataWithLineFeed(String.format(resources.getString(R.string.is_not_hex), hex))
+                hint(String.format(resources.getString(R.string.is_not_hex), hex))
                 e.printStackTrace()
                 okflag = false
             }
         }
         arrayList.add(bytes)
         if (okflag && arrayList.size > 0) {
-            writeData(arrayList)
+            sendData(arrayList)
         }
     }
 
-    private fun writeData(arrayList: ArrayList<ByteArray>) {
+    private fun sendData(arrayList: ArrayList<ByteArray>) {
         measureFragment?.sendData(arrayList)
     }
 
-    private fun receiveDataWithLineFeed(string: String) {
+    private fun hint(string: String) {
         measureFragment?.snack(string)
     }
 }

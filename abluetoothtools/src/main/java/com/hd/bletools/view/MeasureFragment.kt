@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
 import com.hd.bletools.R
+import com.hd.bletools.util.HexDump
 import com.hd.bluetoothutil.BluetoothController
 import com.hd.bluetoothutil.callback.MeasureProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
@@ -31,17 +32,19 @@ import kotlin.concurrent.thread
  */
 abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
 
-    private var device: BluetoothDevice? = null
-
-    private var version = DeviceVersion.BLUETOOTH_2
-
     protected var entity = BluetoothDeviceEntity()
-
-    protected var status = BleMeasureStatus.PREPARE
 
     protected var outputStream: OutputStream? = null
 
     protected var bluetoothGattCharacteristic: BluetoothGattCharacteristic? = null
+
+    private var hexShow = false
+
+    private var status = BleMeasureStatus.PREPARE
+
+    private var device: BluetoothDevice? = null
+
+    private var version = DeviceVersion.BLUETOOTH_2
 
     private val dataQueue = LinkedBlockingQueue<ByteArray>()
 
@@ -57,11 +60,11 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        version = arguments.getSerializable("version") as DeviceVersion
-//        device = arguments.getParcelable("device")
-//        entity.deviceName = device!!.name
-//        entity.version = version
-//        entity.macAddress = device!!.address
+        version = arguments.getSerializable("version") as DeviceVersion
+        device = arguments.getParcelable("device")
+        entity.deviceName = device!!.name
+        entity.version = version
+        entity.macAddress = device!!.address
         BL.d("measure entity :$entity")
     }
 
@@ -72,7 +75,7 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
     override fun onResume() {
         super.onResume()
         initView()
-//        startMeasure()
+        startMeasure()
     }
 
     override fun onPause() {
@@ -87,8 +90,8 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
         tvResult.text = ""
         showResult("==>$entity")
         snack(R.string.start_measure)
-//        initWriteThread()
-//        thread { BluetoothController.init(activity.applicationContext, entity, device, callback).startMeasure() }
+        initWriteThread()
+        thread { BluetoothController.init(activity.applicationContext, entity, device, callback).startMeasure() }
     }
 
     fun stopMeasure() {
@@ -103,8 +106,16 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
         dataQueue.put(data)
     }
 
+    fun snack(string: String) {
+        Snackbar.make(sv, string, Snackbar.LENGTH_LONG).show()
+    }
+
+    fun hexShow(hexShow: Boolean) {
+        this.hexShow = hexShow
+    }
+
     fun sendData(arrayList: ArrayList<ByteArray>) {
-        arrayList.forEach {  dataQueue.put(it) }
+        arrayList.forEach { sendData(it) }
     }
 
     private fun initWriteThread() {
@@ -141,10 +152,6 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
         snack(resources.getString(strId))
     }
 
-    fun snack(string: String) {
-        Snackbar.make(sv, string, Snackbar.LENGTH_LONG).show()
-    }
-
     override fun startSearch() {
         BL.d(" startSearch current thread:" + Thread.currentThread())
         showResult("==>start search \n")
@@ -175,12 +182,16 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
     }
 
     override fun reading(data: ByteArray) {
-        showResult("==>receive data :${Arrays.toString(data)} \n")
+        val result = if (hexShow) {
+            HexDump.toHexString(data)
+        } else {
+            Arrays.toString(data)
+        }
+        showResult("==>receive data :$result \n")
     }
 
     override fun disconnect() {
         BL.d("disconnect current thread:" + Thread.currentThread())
         showResult("==>device disconnect \n")
     }
-
 }
