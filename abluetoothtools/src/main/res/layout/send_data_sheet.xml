@@ -46,7 +46,7 @@
                 android:id="@+id/btn_send"
                 style="@style/average_vertical_widget"
                 android:layout_marginStart="@dimen/small_size"
-                android:background="@drawable/button_shape"
+                android:background="@drawable/send_button"
                 android:onClick="sendData"
                 android:text="@string/send_data"
                 android:textColor="@color/colorAccent"/>
