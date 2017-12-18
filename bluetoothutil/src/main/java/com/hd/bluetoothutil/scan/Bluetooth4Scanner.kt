@@ -37,7 +37,7 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
 
     private fun stopRunnable() = Runnable {
         BL.d("stop scan ble after 10000 millisecond")
-        stopScan()
+        terminationScan()
     }
 
     override fun stopScan() {
@@ -72,7 +72,7 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
             BL.d("scan failed :" + errorCode)
-            stopScan()
+            terminationScan()
         }
     }
 }

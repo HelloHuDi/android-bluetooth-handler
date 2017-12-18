@@ -41,7 +41,7 @@ class BleBroadCastReceiver : BroadcastReceiver() {
                     callback.actionStateChanged(extraState, extraPreviousState)
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-                    BL.d("ACTION_DISCOVERY_FINISHED")
+                    BL.d("ACTION_DISCOVERY_FINISHED：${searchComplete.get()}")
                     if (!searchComplete.get())
                         callback.actionDiscoveryFinished()
                 }

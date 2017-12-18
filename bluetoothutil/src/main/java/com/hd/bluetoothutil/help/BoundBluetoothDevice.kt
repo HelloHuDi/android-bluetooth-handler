@@ -72,6 +72,7 @@ class BoundBluetoothDevice constructor(val context: Context) {
             }
 
             override fun actionDiscoveryFinished() {
+                BL.d("actionDiscoveryFinished")
                 if (boundMap.size > 0) {
                     boundMap.clear()
                 }

@@ -46,7 +46,7 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
                         /** maybe ,target device bound complete*/
                         boundMap.filter { continueScan() }.forEach { scanComplete(it.key) }
                     } else {
-                        stopScan()
+                        terminationScan()
                     }
             }
         }, object : ScannerCallback {
