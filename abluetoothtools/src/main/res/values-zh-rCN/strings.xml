@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">蓝牙调试</string>
+    <string name="scan_bluetooth_2">扫描蓝牙2.0</string>
+    <string name="scan_bluetooth_4">扫描蓝牙4.0</string>
+    <string name="stop_scan">停止扫描</string>
+    <string name="start_measure">开始测量</string>
+    <string name="stop_measure">停止测量</string>
+    <string name="control_bottom_bar">控制底部输入框</string>
+    <string name="send_data">发送</string>
+    <string name="scan_complete">扫描完成</string>
+    <string name="select_uuid_title">选择所有的UUID</string>
+    <string name="permission_failure">权限被拒绝</string>
+    <string name="send_data_hint">字符模式直接输入,如:Hello World,HEX模式用空格分割,如:1E 10 20 F0</string>
+    <string name="send_data_is_null">要发送的十六进制数据为空</string>
+    <string name="translate_coding_failure">转换编码失败</string>
+    <string name="greater_than_ff">%s 大于0xff</string>
+    <string name="is_not_hex">%s 不是十六进制数</string>
+    <string name="send_hex">HEX发送</string>
+    <string name="receive_hex">HEX接收</string>
+</resources>

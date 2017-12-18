@@ -123,11 +123,13 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
             while (status == BleMeasureStatus.RUNNING) {
                 try {
                     val data = dataQueue.poll() ?: continue
-                    BL.d("write data :" + Arrays.toString(data))
-                    if (version == DeviceVersion.BLUETOOTH_2) {
-                        outputStream?.write(data)
-                    } else {
-                        bluetoothGattCharacteristic?.value = data
+                    if (data.isNotEmpty()) {
+                        BL.d("write data :" + Arrays.toString(data))
+                        if (version == DeviceVersion.BLUETOOTH_2) {
+                            outputStream?.write(data)
+                        } else {
+                            bluetoothGattCharacteristic?.value = data
+                        }
                     }
                 } catch (e: Exception) {
                     BL.d("write data error :" + e)
