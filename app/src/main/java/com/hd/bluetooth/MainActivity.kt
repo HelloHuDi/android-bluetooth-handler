@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
             showResult("==>start read \n")
         }
 
-        override fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic, bluetoothLeService: BluetoothLeService) {
+        override fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic?, bluetoothLeService: BluetoothLeService) {
             BL.d("it's now allowed to write")
         }
 
