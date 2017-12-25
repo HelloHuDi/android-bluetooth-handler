@@ -22,7 +22,7 @@ Scanner.stopScan()
 
 ### 开始测量
 ```
-BluetoothController.init(Context,BluetoothDeviceEntity,BluetoothDevice,MeasureProgressCallback).startMeasure()
+BluetoothController.init(Context,BluetoothDeviceEntity,BluetoothDevice?,MeasureProgressCallback).startMeasure()
 ```
 
 ### 停止测量
