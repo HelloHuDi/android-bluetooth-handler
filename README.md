@@ -6,18 +6,16 @@
 ### 使用：
 ```
  compile 'com.hd:bluetoothutil:1.0'
-
 ```
 
 ### 开始扫描设备:
 ```
 Scanner.scan(Context, BluetoothAdapter?, BluetoothDeviceEntity, ScannerCallback)
-
 ```
+
 ### 停止扫描设备:
 ```
 Scanner.stopScan()
-
 ```
 
 ### 开始测量
