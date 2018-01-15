@@ -1,4 +1,4 @@
-# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.0-blue.svg)](https://github.com/HelloHuDi/android-bluetooth-handler/blob/master/abluetoothtools/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.0-blue.svg)](https://github.com/HelloHuDi/android-bluetooth-handler/blob/master/abluetoothtools/release/app-release.apk) 
+# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.0-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.0-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) 
 
 ## 提供android下蓝牙2.0及4.0测量，蓝牙2.0实现自动绑定
 

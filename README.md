@@ -1,4 +1,4 @@
-# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.0-blue.svg)](https://github.com/HelloHuDi/android-bluetooth-handler/blob/master/abluetoothtools/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.0-blue.svg)](https://github.com/HelloHuDi/android-bluetooth-handler/blob/master/abluetoothtools/release/app-release.apk) 
+# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.0-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.0-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) 
 
 ## Provided Bluetooth 2 and 4 working handler of under Android , and Bluetooth 2 achieves automatic binding
 
