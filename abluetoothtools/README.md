@@ -2,8 +2,8 @@
 
 <img src="icon.png"></img>
 
-### 设备搜索截图
+### scan device screenshot
 <img src="image1.png" width="300px" height="500px"/>
 
-### 4.0设备测量截图
+### measure screenshot of bluetooth 4.0 device
 <img src="image2.png" width="300px" height="500px"/> <img src="image3.png" width="300px" height="500px"/>
