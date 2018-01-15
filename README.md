@@ -1,4 +1,4 @@
-# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.0-blue.svg)](https://github.com/HelloHuDi/android-bluetooth-handler/raw/master/app/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.0-blue.svg)](https://github.com/HelloHuDi/android-bluetooth-handler/raw/master/app/release/app-release.apk) 
+# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.0-blue.svg)](https://github.com/HelloHuDi/android-bluetooth-handler/blob/master/abluetoothtools/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.0-blue.svg)](https://github.com/HelloHuDi/android-bluetooth-handler/blob/master/abluetoothtools/release/app-release.apk) 
 
 ## Provided Bluetooth 2 and 4 working handler of under Android , and Bluetooth 2 achieves automatic binding
 
@@ -49,6 +49,6 @@ targetCharacteristicUuid | UUID   | Focus on reading and writing special effects
 reconnected              | Boolean   | If there is a failure in the equipment work, if you need to reconnect, the default false
 version                  | DeviceVersion   |Target Bluetooth device version (2.0 and 4.0) 
 
-## Bluetooth debug tool[abluetoothtools](https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/abluetoothtools)
+## Bluetooth debug tool [abluetoothtools](https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/abluetoothtools)
 
 ## data ： [google 4.0 demo](https://github.com/googlesamples/android-BluetoothLeGatt)
