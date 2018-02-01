@@ -8,6 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Splash" parent="Theme.AppCompat.Light.NoActionBar"/>
+
     <style name="text_common_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@android:color/transparent</item>
@@ -16,6 +18,7 @@
         <item name="android:textSize">@dimen/text_size</item>
         <item name="android:paddingBottom">@dimen/small_size</item>
     </style>
+
     <style name="average_vertical_widget">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>

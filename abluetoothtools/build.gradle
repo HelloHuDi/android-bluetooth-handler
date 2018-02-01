@@ -39,4 +39,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 //    compile project(':bluetoothutil')
     compile 'com.hd:bluetoothutil:1.0'
+    compile 'com.hd.splashscreen:splashscreen:1.3'
 }
