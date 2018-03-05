@@ -19,6 +19,7 @@ import com.hd.bluetoothutil.callback.MeasureProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.config.DeviceVersion
+import com.hd.bluetoothutil.driver.BluetoothLeService
 import com.hd.bluetoothutil.utils.BL
 import kotlinx.android.synthetic.main.result.*
 import java.io.OutputStream
@@ -37,6 +38,8 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
     protected var outputStream: OutputStream? = null
 
     protected var bluetoothGattCharacteristic: BluetoothGattCharacteristic? = null
+
+    protected var bluetoothLeService: BluetoothLeService? = null
 
     private var hexShow = false
 
@@ -129,6 +132,7 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
                             outputStream?.write(data)
                         } else {
                             bluetoothGattCharacteristic?.value = data
+                            bluetoothLeService?.writeCharacteristic(bluetoothGattCharacteristic!!)
                         }
                     }
                 } catch (e: Exception) {

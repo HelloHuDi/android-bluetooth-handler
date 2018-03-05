@@ -75,8 +75,6 @@ class Measure4Fragment : MeasureFragment(), MeasureBle4ProgressCallback {
 
     private var lastCharacteristic: BluetoothGattCharacteristic? = null
 
-    private var bluetoothLeService: BluetoothLeService? = null
-
     private fun notifyTargetCharacteristic(characteristic: BluetoothGattCharacteristic?) {
         entity.targetCharacteristicUuid = characteristic!!.uuid
         bluetoothLeService?.selectiveNotification(characteristic, arrayOf(lastCharacteristic))
