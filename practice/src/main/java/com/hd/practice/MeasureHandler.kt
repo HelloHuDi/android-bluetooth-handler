@@ -12,7 +12,6 @@ import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.driver.BluetoothLeService
 import com.hd.bluetoothutil.utils.BL
 import java.util.*
-import kotlin.concurrent.thread
 
 
 /**
@@ -34,7 +33,8 @@ class MeasureHandler(private val context: Context, private val tv: TextView,priv
     private val closeData=byteArrayOf(0xFE.toByte(), 0x82.toByte(), 0x00.toByte(), 0x00.toByte(), 0x00.toByte(), 0x02.toByte())
 
     fun start(entity: BluetoothDeviceEntity) {
-        thread { BluetoothController.init(context = context, entity = entity, device = null, callback = MeasureHandler@ this).startMeasure()}
+        //main thread
+        BluetoothController.init(context = context, entity = entity, device = null, callback = MeasureHandler@ this).startMeasure()
     }
 
     fun stop() {
