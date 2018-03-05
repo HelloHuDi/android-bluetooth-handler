@@ -34,7 +34,7 @@ class ChoosePatternActivity : BaseActivity() {
 
     private var permission_granted = false
 
-    private var scan_version = DeviceVersion.BLUETOOTH_2
+    private var scan_version = DeviceVersion.BLUETOOTH_4
 
     private val devicesList = mutableListOf<BluetoothDevice>()
 

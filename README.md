@@ -1,4 +1,4 @@
-# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.0-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.0-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) 
+# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.1-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.1-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) 
 
 ## Provided Bluetooth 2 and 4 working handler of under Android , and Bluetooth 2 achieves automatic binding
 
@@ -10,7 +10,7 @@
 
 ### use：
 ```
- compile 'com.hd:bluetoothutil:1.0'
+ compile 'com.hd:bluetoothutil:1.1'
 ```
 
 ### start scan device:

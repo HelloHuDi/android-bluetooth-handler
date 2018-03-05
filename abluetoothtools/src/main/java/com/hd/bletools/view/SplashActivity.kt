@@ -1,9 +1,10 @@
 package com.hd.bletools.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import com.hd.bletools.R
-import com.hd.splashscreen.SimpleConfig
-import com.hd.splashscreen.SimpleSplashFinishCallback
+import com.hd.splashscreen.text.SimpleConfig
+import com.hd.splashscreen.text.SimpleSplashFinishCallback
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.jetbrains.anko.startActivity
 
@@ -24,12 +25,13 @@ class SplashActivity : BaseActivity(), SimpleSplashFinishCallback {
         screen.start()
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun getSimpleConfig(): SimpleConfig {
-        val simpleConfig = SimpleConfig()
+        val simpleConfig = SimpleConfig(this)
         simpleConfig.text = "BLUETOOTHTOOL"
-        simpleConfig.textColor = R.color.colorPrimary
+        simpleConfig.setTextColorFromResources(R.color.colorPrimary)
         simpleConfig.textSize = 30f
-        simpleConfig.iconId = R.mipmap.icon
+        simpleConfig.setIconId(R.mipmap.icon)
         simpleConfig.callback = this
         return simpleConfig
     }

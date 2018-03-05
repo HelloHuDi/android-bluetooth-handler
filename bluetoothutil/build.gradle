@@ -7,7 +7,7 @@ def siteUrl = 'https://github.com/HelloHuDi/android-bluetooth-handler'
 def gitUrl = 'git@github.com:HelloHuDi/android-bluetooth-handler.git'
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-version = "1.0"
+version = "1.1"
 group = "com.hd"
 android {
     compileSdkVersion rootProject.android_compileSdkVersion
@@ -35,7 +35,7 @@ dependencies {
     compile lib_constraint
     //noinspection GradleCompatible
     compile lib_appcompat
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compile "org.jetbrains.anko:anko:$anko_version"
     testCompile 'junit:junit:4.12'
 }
