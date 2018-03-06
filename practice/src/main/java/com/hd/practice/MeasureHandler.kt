@@ -18,19 +18,25 @@ import java.util.*
  * Created by hd on 2018/3/5 .
  * measure handler
  */
-class MeasureHandler(private val context: Context, private val tv: TextView,private val sv:ScrollView) : MeasureBle4ProgressCallback {
+class MeasureHandler(private val context: Context, private val tv: TextView, private val sv: ScrollView) : MeasureBle4ProgressCallback {
 
     init {
         BL.allowLog = BuildConfig.DEBUG
     }
 
-    private var writeGattCharacteristic:BluetoothGattCharacteristic?=null
+    private var writeGattCharacteristic: BluetoothGattCharacteristic? = null
 
-    private var bluetoothLeService: BluetoothLeService?=null
+    private var readGattCharacteristic: BluetoothGattCharacteristic? = null
 
-    private val openData=byteArrayOf(0xFE.toByte(), 0x81.toByte(), 0x00.toByte(), 0x00.toByte(), 0x00.toByte(), 0x01.toByte())
+    private var bluetoothLeService: BluetoothLeService? = null
 
-    private val closeData=byteArrayOf(0xFE.toByte(), 0x82.toByte(), 0x00.toByte(), 0x00.toByte(), 0x00.toByte(), 0x02.toByte())
+    private val openData = byteArrayOf(0xFE.toByte(), 0x81.toByte(), 0x00.toByte(), 0x00.toByte(), 0x00.toByte(), 0x01.toByte())
+
+    private val closeData = byteArrayOf(0xFE.toByte(), 0x82.toByte(), 0x00.toByte(), 0x00.toByte(), 0x00.toByte(), 0x02.toByte())
+
+    private val writeUUID: UUID = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb")
+
+    val readUUID: UUID = UUID.fromString("0000fff2-0000-1000-8000-00805f9b34fb")
 
     fun start(entity: BluetoothDeviceEntity) {
         //main thread
@@ -39,7 +45,7 @@ class MeasureHandler(private val context: Context, private val tv: TextView,priv
 
     fun stop() {
         writeData(closeData)
-        SystemClock.sleep(100)
+        SystemClock.sleep(1000)
         BluetoothController.stopMeasure()
     }
 
@@ -93,18 +99,31 @@ class MeasureHandler(private val context: Context, private val tv: TextView,priv
     }
 
     override fun write(bluetoothGattCharacteristic: BluetoothGattCharacteristic?, bluetoothLeService: BluetoothLeService) {
-        if (bluetoothGattCharacteristic != null && //
-                "0000fff1-0000-1000-8000-00805f9b34fb" == bluetoothGattCharacteristic.uuid.toString()) {// write
-            writeGattCharacteristic=bluetoothGattCharacteristic
-            MeasureHandler@this.bluetoothLeService=bluetoothLeService
-            writeData(openData)
+        if (bluetoothGattCharacteristic != null) {
+            if (writeUUID == bluetoothGattCharacteristic.uuid) {
+                writeGattCharacteristic = bluetoothGattCharacteristic
+                MeasureHandler@ this.bluetoothLeService = bluetoothLeService
+            }
+            if (readUUID == bluetoothGattCharacteristic.uuid) {
+                readGattCharacteristic = bluetoothGattCharacteristic
+                MeasureHandler@ this.bluetoothLeService = bluetoothLeService
+            }
+            if (!onlyOneSend && writeGattCharacteristic != null && readGattCharacteristic != null) {
+                Thread.sleep(1000)
+                writeData(openData)
+            }
         }
     }
 
+    private var onlyOneSend = false
+
     private fun writeData(data: ByteArray) {
-        if(writeGattCharacteristic!=null) {
+        if (writeGattCharacteristic != null) {
+            onlyOneSend = true
             writeGattCharacteristic!!.value = data
             bluetoothLeService!!.writeCharacteristic(writeGattCharacteristic!!)
+            Thread.sleep(200)
+            bluetoothLeService!!.selectiveNotification(readGattCharacteristic!!, arrayOf(writeGattCharacteristic!!))
         }
     }
 }

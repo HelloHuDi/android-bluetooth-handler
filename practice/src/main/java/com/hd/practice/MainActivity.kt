@@ -10,11 +10,11 @@ import android.view.View
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.config.DeviceVersion
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
+/** 测试蓝牙设备名为：SZLSD SPPLE Module 的血压计，该设备需要发送指令工作及发送指令结束 */
 class MainActivity : AppCompatActivity() {
 
-    private val measureHandler by lazy { MeasureHandler(this, tvResult,svResult) }
+    private val measureHandler by lazy { MeasureHandler(this, tvResult, svResult) }
 
     private val entity = BluetoothDeviceEntity()
 
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissionGranted()
         entity.deviceName = name.text.toString()
         entity.version = DeviceVersion.BLUETOOTH_4
-        entity.targetCharacteristicUuid = UUID.fromString("0000fff2-0000-1000-8000-00805f9b34fb")// read
+        entity.targetCharacteristicUuid = measureHandler.readUUID
     }
 
     override fun onStop() {
@@ -44,25 +44,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissionGranted() {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission_group.LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission_group.LOCATION)) {
-                    permission_granted = false
-                } else {
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE)
-                }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission_group.LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission_group.LOCATION)) {
+                permission_granted = false
             } else {
-                permission_granted = true
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE)
             }
+        } else {
+            permission_granted = true
+        }
     }
 
-    fun start(view: View?=null) {
-        if(permission_granted)
-        measureHandler.start(entity)
+    fun start(view: View? = null) {
+        if (permission_granted)
+            measureHandler.start(entity)
     }
 
-    fun stop(view: View?=null) {
+    fun stop(view: View? = null) {
         measureHandler.stop()
     }
 }
