@@ -1,39 +1,50 @@
-# android Bluetooth handler [![](https://img.shields.io/badge/release-v1.1-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) [![](https://img.shields.io/badge/demo-v1.1-blue.svg)](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk) 
+<p align="center">
+	<img width="72" height="72" src="art/icon.png"/>
+</p>
+<h3 align="center">android bluetooth handler </h3>
+<p align="center">
+<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk" target="_blank"><img src="https://img.shields.io/badge/release-v1.2-blue.svg"></img></a>
+<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/app-release.apk" target="_blank"><img src="https://img.shields.io/badge/demo-v1.2-blue.svg"></img></a>
+</p>
 
 ## Provided Bluetooth 2 and 4 working handler of under Android , and Bluetooth 2 achieves automatic binding
-
-## [中文README](README_ch.md)
 
 ### screenshot
 
 <img src="art/bluetooth4.png" width="300px" height="500px"/> <img src="art/bluetooth2.png" width="300px" height="500px"/>
 
 ### use：
+
 ```
- compile 'com.hd:bluetoothutil:1.1'
+ compile 'com.hd:bluetoothutil:1.2'
 ```
 
 ### start scan device:
+
 ```
 Scanner.scan(Context, BluetoothAdapter?, BluetoothDeviceEntity, ScannerCallback)
 ```
 
 ### stop scan device:
+
 ```
 Scanner.stopScan()
 ```
 
 ### start measure
+
 ```
 BluetoothController.init(Context,BluetoothDeviceEntity,BluetoothDevice?,MeasureProgressCallback).startMeasure()
 ```
 
 ### stop measure
+
 ```
 BluetoothController.stopMeasure()
 ```
 
 ### open the print function
+
 ```
 BL.allowLog=BuildConfig.DEBUG
 ```
