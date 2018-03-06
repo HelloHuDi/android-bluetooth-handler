@@ -67,7 +67,7 @@ abstract class BluetoothHandler(val context: Context, val entity: BluetoothDevic
     }
 
     override fun scan(scanComplete: Boolean, device: BluetoothDevice?) {
-        BL.d("scan result :$scanComplete+$device")
+        BL.d("scan result :$scanComplete+${device?.name}")
         if (!scanComplete) {
             if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device, entity)) {
                 Scanner.stopScan()
@@ -75,6 +75,9 @@ abstract class BluetoothHandler(val context: Context, val entity: BluetoothDevic
                 notificationSearchStatus()
             }
         } else {
+            if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device, entity)) {
+                targetDevice = device
+            }
             notificationSearchStatus()
         }
     }

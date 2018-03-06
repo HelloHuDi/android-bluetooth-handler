@@ -3,6 +3,7 @@ package com.hd.bluetoothutil.scan
 import android.bluetooth.BluetoothDevice
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.callback.ScannerCallback
+import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.help.BoundBluetoothDevice
 import com.hd.bluetoothutil.utils.BL
 
@@ -14,6 +15,7 @@ import com.hd.bluetoothutil.utils.BL
 class Bluetooth2Scanner : BluetoothBaseScanner() {
 
     override fun startScan() {
+        status = BleMeasureStatus.RUNNING
         searchNativeDevice()
     }
 

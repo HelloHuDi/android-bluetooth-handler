@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanResult
 import android.os.Build
 import android.os.Handler
 import android.support.annotation.RequiresApi
+import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.utils.BL
 
 
@@ -23,6 +24,7 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
     private val stopRunnable = stopRunnable()
 
     override fun startScan() {
+        status = BleMeasureStatus.RUNNING
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && bluetoothAdapter!!.isOffloadedScanBatchingSupported) {
             mBluetoothLeScanner = bluetoothAdapter!!.bluetoothLeScanner
             BL.d("=" + bluetoothAdapter!!.isOffloadedFilteringSupported + "=" + mBluetoothLeScanner)

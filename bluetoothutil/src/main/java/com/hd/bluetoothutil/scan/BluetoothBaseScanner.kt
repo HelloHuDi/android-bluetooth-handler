@@ -40,14 +40,13 @@ abstract class BluetoothBaseScanner {
     }
 
     protected fun scanComplete(device: BluetoothDevice? = null) {
-        BL.d("found current device is ：${device?.name} + $status+${device?.bondState}+${continueScan()}")
+        val same = sameDevice(device)
+        BL.d("found current device is ：${device?.name} + $status+${device?.bondState}+${continueScan()}+$same")
+        if (same) status = BleMeasureStatus.STOPPING
         callback?.scan(!continueScan(), device)
-        /** scanning to the target device */
-        if (continueScan()) {
-            if (sameDevice(device))
-                terminationScan()
-        } else {
+        if (same) {
             callback = null
+            terminationScan()
         }
     }
 
