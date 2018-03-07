@@ -28,6 +28,7 @@ class Measure4Fragment : MeasureFragment(), MeasureBle4ProgressCallback {
     }
 
     override fun initView() {
+        itemUUID.clear()
         itemUUID.add(0, activity.resources.getString(R.string.select_uuid_title))
         setSpinnerAdapter()
     }
