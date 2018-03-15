@@ -320,14 +320,11 @@ class BluetoothLeService : Service() {
                     for (bluetoothGattCharacteristic in bluetoothGattService.characteristics) {
                         if (bluetoothGattCharacteristic == null)
                             continue
-                        if (!setNotifition[0]) {
-                            setNotifition(entity, bluetoothGattCharacteristic, setNotifition)
-                        } else {
-                            setCharacteristicNotification(bluetoothGattCharacteristic, false)
-                        }
                         callback?.write(bluetoothGattCharacteristic, this)
                         BL.d("start write data to device: " + Arrays.toString(bluetoothGattCharacteristic.value) //
                                 + "==" + entity?.targetCharacteristicUuid + "==" + bluetoothGattCharacteristic.uuid)
+                        if(setNotifition[0])continue
+                        setNotifition(entity, bluetoothGattCharacteristic, setNotifition)
                     }
                 }
             }
@@ -335,19 +332,16 @@ class BluetoothLeService : Service() {
         thread.start()
     }
 
-    private fun setNotifition(entity: BluetoothDeviceEntity? = null, //
-                              bluetoothGattCharacteristic: BluetoothGattCharacteristic, setNotifition: BooleanArray) {
-        val hasTarget = entity?.targetCharacteristicUuid != null && (bluetoothGattCharacteristic.uuid == entity.targetCharacteristicUuid)
-        if (entity?.targetCharacteristicUuid != null) {
-            if (hasTarget) {
+    private fun setNotifition(entity: BluetoothDeviceEntity? = null,bluetoothGattCharacteristic: BluetoothGattCharacteristic,//
+                              setNotifition: BooleanArray) {
+        if(entity?.targetCharacteristicUuid != null){
+            if(bluetoothGattCharacteristic.uuid == entity.targetCharacteristicUuid){
                 BL.d("target uuid : " + bluetoothGattCharacteristic.uuid)
                 setCharacteristicNotification(bluetoothGattCharacteristic, true)
+                readCharacteristic(bluetoothGattCharacteristic)
                 setNotifition[0] = true
-            } else {
-                setCharacteristicNotification(bluetoothGattCharacteristic, false)
-                BL.d("do not set notification :" + bluetoothGattCharacteristic.uuid)
             }
-        } else {
+        }else{
             setCharacteristicNotification(bluetoothGattCharacteristic, true)
         }
     }
