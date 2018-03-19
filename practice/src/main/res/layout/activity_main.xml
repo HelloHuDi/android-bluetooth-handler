@@ -13,7 +13,6 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="SZLSD SPPLE Module"
         android:textColor="@android:color/black"/>
 
     <LinearLayout

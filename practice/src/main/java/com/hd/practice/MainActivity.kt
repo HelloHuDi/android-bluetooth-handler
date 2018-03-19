@@ -7,16 +7,12 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.hd.bluetoothutil.config.BluetoothDeviceEntity
-import com.hd.bluetoothutil.config.DeviceVersion
+import com.hd.practice.handler.MeasureFBT01Handler
 import kotlinx.android.synthetic.main.activity_main.*
 
-/** 测试蓝牙设备名为：SZLSD SPPLE Module 的血压计，该设备需要发送指令工作及发送指令结束 */
 class MainActivity : AppCompatActivity() {
 
-    private val measureHandler by lazy { MeasureHandler(this, tvResult, svResult) }
-
-    private val entity = BluetoothDeviceEntity()
+    private val measureHandler by lazy { MeasureFBT01Handler(this, tvResult, svResult) }
 
     private val REQUEST_CODE = 10086
 
@@ -25,10 +21,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        name.text=measureHandler.deviceName
         checkPermissionGranted()
-        entity.deviceName = name.text.toString()
-        entity.version = DeviceVersion.BLUETOOTH_4
-        entity.targetCharacteristicUuid = measureHandler.readUUID
     }
 
     override fun onStop() {
@@ -59,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     fun start(view: View? = null) {
         if (permission_granted)
-            measureHandler.start(entity)
+            measureHandler.start()
     }
 
     fun stop(view: View? = null) {
