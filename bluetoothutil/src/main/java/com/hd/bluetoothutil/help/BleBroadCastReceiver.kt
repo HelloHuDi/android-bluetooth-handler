@@ -10,7 +10,6 @@ import android.os.Parcelable
 import com.hd.bluetoothutil.callback.BleBoundProgressCallback
 import com.hd.bluetoothutil.utils.BL
 import com.hd.bluetoothutil.utils.ClsUtils
-import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -20,34 +19,35 @@ import java.util.concurrent.atomic.AtomicBoolean
 class BleBroadCastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (callbackWeakReference == null)
+        if (callbackList == null) {
+            BL.e("BleBoundProgressCallback is null")
             return
+        }
         val action = intent.action
-        val callback = callbackWeakReference!!.get()
-        if (callback != null) {
-            when (action) {
-                BluetoothDevice.ACTION_FOUND -> foundDevice(context, intent, callback)
-                BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent, callback)
-                BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
-                    val device = intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
-                    callback.actionBondStateChanged(device)
-                    if (device.bondState == BluetoothDevice.BOND_BONDED)
-                        callback.actionDiscoveryFinished()
-                }
-                BluetoothAdapter.ACTION_STATE_CHANGED -> {
-                    val extraState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
-                    val extraPreviousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, -1)
-                    BL.d("current bluetooth status :$extraState,previous bluetooth status :$extraPreviousState")
-                    callback.actionStateChanged(extraState, extraPreviousState)
-                }
-                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-                    BL.d("ACTION_DISCOVERY_FINISHED：${searchComplete.get()}")
-                    if (!searchComplete.get())
-                        callback.actionDiscoveryFinished()
+        val callback = callbackList!![0]
+        BL.d("scanning to device ：$callback=$action")
+        when (action) {
+            BluetoothDevice.ACTION_FOUND -> foundDevice(context, intent, callback)
+            BluetoothDevice.ACTION_PAIRING_REQUEST -> bondDevice(intent, callback)
+            BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
+                val device = intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
+                callback.actionBondStateChanged(device)
+                if (device.bondState == BluetoothDevice.BOND_BONDED)
+                    callback.actionDiscoveryFinished()
+            }
+            BluetoothAdapter.ACTION_STATE_CHANGED -> {
+                val extraState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
+                val extraPreviousState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, -1)
+                BL.d("current bluetooth status :$extraState,previous bluetooth status :$extraPreviousState")
+                callback.actionStateChanged(extraState, extraPreviousState)
+            }
+            BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+                BL.d("ACTION_DISCOVERY_FINISHED：${searchComplete.get()}")
+                if (!searchComplete.get()) {
+                    callback.actionDiscoveryFinished()
+                    clear()
                 }
             }
-        } else {
-            BL.e("BleBoundProgressCallback is null")
         }
     }
 
@@ -55,7 +55,7 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
         BL.d("found device :" + device.name)
         if (BluetoothSecurityCheck.newInstance(context).checkSameDevice(device,
-                callback?.deviceName, callback?.macAddress)) {
+                        callback?.deviceName, callback?.macAddress)) {
             startBound(device)
         }
         callback?.foundDevice(device)
@@ -68,7 +68,7 @@ class BleBroadCastReceiver : BroadcastReceiver() {
             var bondSuccess: Boolean
             try {
                 bondSuccess = ClsUtils.createBond(device.javaClass, device)
-                BL.d("start bond device 1：" + bondSuccess)
+                BL.d("start bond device 1：$bondSuccess")
             } catch (e: Exception) {
                 bondSuccess = false
             }
@@ -112,18 +112,16 @@ class BleBroadCastReceiver : BroadcastReceiver() {
     companion object {
         private var pairArray: Array<String?>? = null
         private val searchComplete = AtomicBoolean(false)
-        private var callbackWeakReference: WeakReference<BleBoundProgressCallback>? = null
+        private var callbackList: List<BleBoundProgressCallback>? = null
 
         fun newInstance(bleBoundProgressCallback: BleBoundProgressCallback) {
-            callbackWeakReference = WeakReference(bleBoundProgressCallback)
+            callbackList = arrayListOf(bleBoundProgressCallback)
             pairArray = arrayOf(bleBoundProgressCallback.pin, "1234", "0000")
         }
 
         fun clear() {
             BL.d("broad cast receiver clear callback")
-            if (callbackWeakReference != null && callbackWeakReference!!.get() != null) {
-                callbackWeakReference!!.clear()
-            }
+            callbackList = null
             searchComplete.set(false)
         }
     }

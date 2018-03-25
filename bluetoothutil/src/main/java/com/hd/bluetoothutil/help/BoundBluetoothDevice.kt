@@ -57,7 +57,7 @@ class BoundBluetoothDevice constructor(val context: Context) {
             override fun actionBondStateChanged(bluetoothDevice: BluetoothDevice) {
                 BL.d("device bond state changed :" + bluetoothDevice.name + "==" + bluetoothDevice.bondState)
                 if(bluetoothDevice.bondState == BluetoothDevice.BOND_BONDED) {
-                    boundMap.put(bluetoothDevice, true)
+                    boundMap[bluetoothDevice] = true
                     callback1.boundStatus(false, boundMap)
                 }
             }

@@ -40,7 +40,6 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
 
     private fun searchNearbyDevice() {
         BL.d("start search nearby device")
-        bluetoothAdapter!!.startDiscovery()
         BoundBluetoothDevice.newInstance(context!!).boundDevice(entity!!, object : BleBoundStatusCallback {
             override fun boundStatus(discoveryFinished: Boolean, boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
                 if (continueScan())
@@ -61,5 +60,6 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
                     }
             }
         })
+        bluetoothAdapter!!.startDiscovery()
     }
 }
