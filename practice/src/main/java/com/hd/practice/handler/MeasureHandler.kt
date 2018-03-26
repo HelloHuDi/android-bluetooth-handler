@@ -37,14 +37,18 @@ abstract class MeasureHandler(private val context: Context, private val tv: Text
 
     protected var closeData: ByteArray? = null
 
+    protected var reading=false
+
     var deviceName: String? = null
 
     open fun start() {
         //main thread
         BluetoothController.init(context = context, entity = entity, device = null, callback = MeasureHandler@ this).startMeasure()
+        reading=false
     }
 
     open fun stop() {
+        reading=false
         if (closeData!=null) {
             writeData(closeData!!)
             SystemClock.sleep(1000)
@@ -63,7 +67,7 @@ abstract class MeasureHandler(private val context: Context, private val tv: Text
                 sv.fullScroll(ScrollView.FOCUS_DOWN)
             })
         }
-        BL.d("showResult==" + msg)
+        BL.d("showResult==$msg")
     }
 
     override fun startSearch() {
@@ -96,6 +100,7 @@ abstract class MeasureHandler(private val context: Context, private val tv: Text
     }
 
     override fun reading(data: ByteArray) {
+        reading=true
         BL.d(" reading hex data :" + HexDump.toHexString(data))
         showResult("==>receive data :${Arrays.toString(data)} \n")
     }
