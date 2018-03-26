@@ -3,8 +3,8 @@
 </p>
 <h3 align="center">android bluetooth handler </h3>
 <p align="center">
-<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/release-v1.3.2-blue.svg"></img></a>
-<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/demo-v1.3.2-blue.svg"></img></a>
+<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/release-v1.3.3-blue.svg"></img></a>
+<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/demo-v1.3.3-blue.svg"></img></a>
 </p>
 
 ## provided Bluetooth 2 and 4 working handler of under Android , and Bluetooth 2 achieves automatic binding
@@ -24,7 +24,7 @@
 ### use：
 
 ```
- compile 'com.hd:bluetoothutil:1.3.2'
+ compile 'com.hd:bluetoothutil:1.3.3'
 ```
 
 ### start scan device:
