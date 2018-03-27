@@ -4,8 +4,9 @@ import java.util.*
 
 /**
  * Created by hd on 2017/6/12 0008.
- * Bluetooth服务发现协议(SDP)规格
- * 参考：https://www.bluetooth.com/zh-cn/specifications/assigned-numbers/service-discovery
+ * Bluetooth service discovery protocol (SDP) specification
+ * Reference resources ：
+ * https://www.bluetooth.com/zh-cn/specifications/assigned-numbers/service-discovery
  */
 object GattAttributeResolver {
     val CHARACTER_RECEIVE = "49535343-1e4d-4bd9-ba61-23c647249616"
@@ -194,183 +195,184 @@ object GattAttributeResolver {
 
     private fun populateGattAttributesMap(): Map<String, String> {
         val map = HashMap<String, String>()
-
-        map.put(CHARACTER_RECEIVE, "Character Receive")
-        map.put(BASE_GUID, "Base GUID")
-        map.put(SERVICE_DISCOVERY_PROTOCOL_SDP, "Service Discovery Protocol (SDP)")
-        map.put(USER_DATAGRAM_PROTOCOL_UDP, "User Datagram Protocol (UDP)")
-        map.put(RADIO_FREQUENCY_COMMUNICATION_PROTOCOL_RFCOMM, "Radio Frequency Communication Protocol (RFCOMM)")
-        map.put(TCP, "TCP")
-        map.put(TCSBIN, "TCSBIN")
-        map.put(TCSAT, "TCSAT")
-        map.put(OBJECT_EXCHANGE_PROTOCOL_OBEX, "Object Exchange Protocol (OBEX)")
-        map.put(IP, "IP")
-        map.put(FTP, "FTP")
-        map.put(HTTP, "HTTP")
-        map.put(WSP, "WSP")
-        map.put(BNEP_SVC, "BNEP_SVC")
-        map.put(UPNP_PROTOCOL, "UPNP Protocol")
-        map.put(HIDP, "HIDP")
-        map.put(HARDCOPY_CONTROL_CHANNEL_PROTOCOL, "Hardcopy Control Channel Protocol")
-        map.put(HARDCOPY_DATA_CHANNEL_PROTOCOL, "Hardcopy Data Channel Protocol")
-        map.put(HARDCOPY_NOTIFICATION_PROTOCOL, "Hardcopy Notification Protocol")
-        map.put(VCTP_PROTOCOL, "VCTP Protocol")
-        map.put(VDTP_PROTOCOL, "VDTP Protocol")
-        map.put(CMPT_PROTOCOL, "CMPT Protocol")
-        map.put(UDI_C_PLANE_PROTOCOL, "UDI C Plane Protocol")
-        map.put(MCAP_CONTROL_CHANNEL, "MCAP Control Channel")
-        map.put(MCAP_DATA_CHANNEL, "MCAP Data Channel")
-        map.put(L2CAP, "L2CAP")
-        map.put(SERVICE_DISCOVERY_SERVER, "Service Discovery Server")
-        map.put(BROWSE_GROUP_DESCRIPTOR, "Browse Group Descriptor")
-        map.put(PUBLIC_BROWSE_GROUP, "Public Browse Group")
-        map.put(SPP, "SPP")
-        map.put(LAN_ACCESS_USING_PPP, "LAN Access Using PPP")
-        map.put(DUN_GW, "DUN_GW")
-        map.put(OBEX_SYNC, "OBEX_SYNC")
-        map.put(OBEX_OBJECT_PUSH, "OBEX Object Push")
-        map.put(OBEX_FILE_TRANSFER, "OBEX File Transfer")
-        map.put(IRMC_SYNC_COMMAND, "IrMC Sync Command")
-        map.put(HSP_HS, "HSP_HS")
-        map.put(CORDLESS_TELEPHONY, "Cordless Telephony")
-        map.put(AUDIO_SOURCE, "Audio Source")
-        map.put(AUDIO_SINK, "Audio Sink")
-        map.put(AV_REMOTE_CONTROL_TARGET, "AV Remote Control Target")
-        map.put(ADVANCED_AUDIO, "ADVANCED_AUDIO")
-        map.put(AVRCP_REMOTE, "AVRCP_REMOTE")
-        map.put(VIDEO_CONFERENCING, "Video Conferencing")
-        map.put(INTERCOM, "Intercom")
-        map.put(FAX, "FAX")
-        map.put(HEADSET_PROFILE_HSP_AUDIO_GATEWAY, "Headset Profile (HSP) - Audio Gateway")
-        map.put(WAP, "WAP")
-        map.put(WAP_CLIENT, "WAP Client")
-        map.put(PANU, "PANU")
-        map.put(NAP, "NAP")
-        map.put(GN, "GN")
-        map.put(DIRECT_PRINTING, "Direct Printing")
-        map.put(REFERENCE_PRINTING, "Reference Printing")
-        map.put(IMAGING, "Imaging")
-        map.put(IMAGING_RESPONDER, "Imaging Responder")
-        map.put(IMAGING_AUTOMATIC_ARCHIVE, "Imaging Automatic Archive")
-        map.put(IMAGING_REFERENCE_OBJECTS, "Imaging Reference Objects")
-        map.put(HANDS_FREE_PROFILE_HFP, "Hands Free Profile (HFP)")
-        map.put(HANDS_FREE_PROFILE_HFP_AUDIO_GATEWAY, "Hands Free Profile (HFP) – Audio Gateway")
-        map.put(DIRECT_PRINTING_REFERENCE_OBJECTS, "Direct Printing Reference Objects")
-        map.put(REFLECTED_UI, "Reflected UI")
-        map.put(BASIC_PRINTING, "Basic Printing")
-        map.put(PRINTING_STATUS, "Printing Status")
-        map.put(HID, "HID")
-        map.put(HARDCOPY_CABLE_REPLACEMENT, "Hardcopy Cable Replacement")
-        map.put(HCR_PRINT, "HCR Print")
-        map.put(HCR_SCAN, "HCR Scan")
-        map.put(COMMON_ISDN_ACCESS, "Common ISDN Access")
-        map.put(VIDEO_CONFERENCING_GATEWAY, "Video Conferencing Gateway")
-        map.put(UDIMT, "UDIMT")
-        map.put(UDITA, "UDITA")
-        map.put(AUDIO_VIDEO, "Audio Video")
-        map.put(SIM_ACCESS, "SIM Access")
-        map.put(OBEX_PCE, "OBEX PCE")
-        map.put(OBEX_PSE, "OBEX PSE")
-        map.put(OBEX_PBAP, "OBEX PBAP")
-        map.put(OBEX_MAS, "OBEX MAS")
-        map.put(OBEX_MNS, "OBEX MNS")
-        map.put(OBEX_MAP, "OBEX MAP")
-        map.put(PNP, "PNP")
-        map.put(GENERIC_NETWORKING, "Generic Networking")
-        map.put(GENERIC_FILE_TRANSFER, "Generic File Transfer")
-        map.put(GENERIC_AUDIO, "Generic Audio")
-        map.put(GENERIC_TELEPHONY, "Generic Telephony")
-        map.put(UPNP, "UPNP")
-        map.put(UPNP_IP, "UPNP IP")
-        map.put(ESDP_UPNP_IP_PAN, "ESDP UPnP IP PAN")
-        map.put(ESDP_UPNP_IP_LAP, "ESDP UPnP IP LAP")
-        map.put(ESDP_UPNP_L2CAP, "ESDP Upnp L2CAP")
-        map.put(VIDEO_DISTRIBUTION_PROFILE_VDP_SOURCE, "Video Distribution Profile (VDP) - Source")
-        map.put(VIDEO_DISTRIBUTION_PROFILE_VDP_SINK, "Video Distribution Profile (VDP) - Sink")
-        map.put(VIDEO_DISTRIBUTION_PROFILE_VDP, "Video Distribution Profile (VDP)")
-        map.put(HEALTH_DEVICE_PROFILE_HDP, "Health Device Profile (HDP)")
-        map.put(HEALTH_DEVICE_PROFILE_HDP_SOURCE, "Health Device Profile (HDP) - Source")
-        map.put(HEALTH_DEVICE_PROFILE_HDP_SINK, "Health Device Profile (HDP) - Sink")
-        map.put(GAP, "GAP")
-        map.put(GATT, "GATT")
-        map.put(IMMEDIATE_ALERT, "IMMEDIATE_ALERT")
-        map.put(LINK_LOSS, "LINK_LOSS")
-        map.put(TX_POWER, "TX_POWER")
-        map.put(HEALTH_THERMOMETER, "Health Thermometer")
-        map.put(DEVICE_INFORMATION, "Device Information")
-        map.put(HEART_RATE, "HEART_RATE")
-        map.put(CYCLING_SC, "CYCLING_SC")
-        map.put(CLIENT_CHARACTERISTIC_CONFIG, "CLIENT_CHARACTERISTIC_CONFIG")
-        map.put(DEVICE_NAME, "Device Name")
-        map.put(APPEARANCE, "Appearance")
-        map.put(PERIPHERAL_PRIVACY_FLAG, "Peripheral Privacy Flag")
-        map.put(RECONNECTION_ADDRESS, "Reconnection Address")
-        map.put(PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS, "Peripheral Preferred Connection Parameters")
-        map.put(SERVICE_CHANGED, "Service Changed")
-        map.put(ALERT_LEVEL, "Alert Level")
-        map.put(TX_POWER_LEVEL, "Tx Power Level")
-        map.put(DATE_TIME, "Date Time")
-        map.put(DAY_OF_WEEK, "Day of Week")
-        map.put(DAY_DATE_TIME, "Day Date Time")
-        map.put(EXACT_TIME_256, "Exact Time 256")
-        map.put(DST_OFFSET, "DST Offset")
-        map.put(TIME_ZONE, "Time Zone")
-        map.put(LOCAL_TIME_INFORMATION, "Local Time Information")
-        map.put(TIME_WITH_DST, "Time with DST")
-        map.put(TIME_ACCURACY, "Time Accuracy")
-        map.put(TIME_SOURCE, "Time Source")
-        map.put(REFERENCE_TIME_INFORMATION, "Reference Time Information")
-        map.put(TIME_UPDATE_CONTROL_POINT, "Time Update Control Point")
-        map.put(TIME_UPDATE_STATE, "Time Update State")
-        map.put(TEMPERATURE_MEASUREMENT, "Temperature Measurement")
-        map.put(TEMPERATURE_TYPE, "Temperature Type")
-        map.put(INTERMEDIATE_TEMPERATURE, "Intermediate Temperature")
-        map.put(MEASUREMENT_INTERVAL, "Measurement Interval")
-        map.put(SYSTEM_ID, "System ID")
-        map.put(MODEL_NUMBER_STRING, "Model Number String")
-        map.put(SERIAL_NUMBER_STRING, "Serial Number String")
-        map.put(FIRMWARE_REVISION_STRING, "Firmware Revision String")
-        map.put(HARDWARE_REVISION_STRING, "Hardware Revision String")
-        map.put(SOFTWARE_REVISION_STRING, "Software Revision String")
-        map.put(MANUFACTURER_NAME_STRING, "Manufacturer Name String")
-        map.put(IEEE_1107320601_REGULATORY, "IEEE 11073-20601 Regulatory")
-        map.put(CURRENT_TIME, "Current Time")
-        map.put(BLOOD_PRESSURE_MEASUREMENT, "Blood Pressure Measurement")
-        map.put(INTERMEDIATE_CUFF_PRESSURE, "Intermediate Cuff Pressure")
-        map.put(HEART_RATE_MEASUREMENT, "Heart Rate Measurement")
-        map.put(BODY_SENSOR_LOCATION, "Body Sensor Location")
-        map.put(HEART_RATE_CONTROL_POINT, "Heart Rate Control Point")
-        map.put(ALERT_STATUS, "Alert Status")
-        map.put(RINGER_CONTROL_POINT, "Ringer Control Point")
-        map.put(RINGER_SETTING, "Ringer Setting")
-        map.put(ALERT_CATEGORY_ID_BIT_MASK, "Alert Category ID Bit Mask")
-        map.put(ALERT_CATEGORY_ID, "Alert Category ID")
-        map.put(ALERT_NOTIFICATION_CONTROL_POINT, "Alert Notification Control Point")
-        map.put(UNREAD_ALERT_STATUS, "Unread Alert Status")
-        map.put(NEW_ALERT, "New Alert")
-        map.put(SUPPORTED_NEW_ALERT_CATEGORY, "Supported New Alert Category")
-        map.put(SUPPORTED_UNREAD_ALERT_CATEGORY, "Supported Unread Alert Category")
-        map.put(BLOOD_PRESSURE_FEATURE, "Blood Pressure Feature")
-        map.put(PNPID, "PNPID")
-        map.put(SC_CONTROL_POINT, "SC_CONTROL_POINT")
-        map.put(CSC_MEASUREMENT, "CSC_MEASUREMENT")
-        map.put(CSC_FEATURE, "CSC_FEATURE")
-        map.put(SENSOR_LOCATION, "SENSOR_LOCATION")
-        map.put(ACTIVESYNC, "ActiveSync")
-        map.put(ESTIMOTE_SERVICE, "Estimote Service")
-        map.put(ESTIMOTE_UUID, "Estimote UUID")
-        map.put(ESTIMOTE_MAJOR, "Estimote Major")
-        map.put(ESTIMOTE_MINOR, "Estimote Minor")
-        map.put(ESTIMOTE_BATTERY, "Estimote Battery")
-        map.put(ESTIMOTE_TEMPERATURE, "Estimote Temperature")
-        map.put(ESTIMOTE_POWER, "Estimote Power")
-        map.put(ESTIMOTE_ADVERTISING_INTERVAL, "Estimote Advertising Interval")
-        map.put(ESTIMOTE_VERSION_SERVICE, "Estimote Version Service")
-        map.put(ESTIMOTE_SOFTWARE_VERSION, "Estimote Software Version")
-        map.put(ESTIMOTE_HARDWARE_VERSION, "Estimote Hardware Version")
-        map.put(ESTIMOTE_AUTHENTICATION_SERVICE, "Estimote Authentication Service")
-        map.put(ESTIMOTE_ADVERTISING_SEED, "Estimote Advertising Seed")
-        map.put(ESTIMOTE_ADVERTISING_VECTOR, "Estimote Advertising Vector")
+        map[CHARACTER_RECEIVE] = "Character Receive"
+        map[BASE_GUID] = "Base GUID"
+        map[SERVICE_DISCOVERY_PROTOCOL_SDP] = "Service Discovery Protocol (SDP)"
+        map[USER_DATAGRAM_PROTOCOL_UDP] = "User Datagram Protocol (UDP)"
+        map[RADIO_FREQUENCY_COMMUNICATION_PROTOCOL_RFCOMM] = "Radio Frequency Communication Protocol (RFCOMM)"
+        map[TCP] = "TCP"
+        map[TCSBIN] = "TCSBIN"
+        map[TCSAT] = "TCSAT"
+        map[OBJECT_EXCHANGE_PROTOCOL_OBEX] = "Object Exchange Protocol (OBEX)"
+        map[IP] = "IP"
+        map[FTP] = "FTP"
+        map[HTTP] = "HTTP"
+        map[WSP] = "WSP"
+        map[BNEP_SVC] = "BNEP_SVC"
+        map[UPNP_PROTOCOL] = "UPNP Protocol"
+        map[HIDP] = "HIDP"
+        map[HARDCOPY_CONTROL_CHANNEL_PROTOCOL] = "Hardcopy Control Channel Protocol"
+        map[HARDCOPY_DATA_CHANNEL_PROTOCOL] = "Hardcopy Data Channel Protocol"
+        map[HARDCOPY_NOTIFICATION_PROTOCOL] = "Hardcopy Notification Protocol"
+        map[VCTP_PROTOCOL] = "VCTP Protocol"
+        map[VDTP_PROTOCOL] = "VDTP Protocol"
+        map[CMPT_PROTOCOL] = "CMPT Protocol"
+        map[UDI_C_PLANE_PROTOCOL] = "UDI C Plane Protocol"
+        map[MCAP_CONTROL_CHANNEL] = "MCAP Control Channel"
+        map[MCAP_DATA_CHANNEL] = "MCAP Data Channel"
+        map[L2CAP] = "L2CAP"
+        map[SERVICE_DISCOVERY_SERVER] = "Service Discovery Server"
+        map[BROWSE_GROUP_DESCRIPTOR] = "Browse Group Descriptor"
+        map[PUBLIC_BROWSE_GROUP] = "Public Browse Group"
+        map[SPP] = "SPP"
+        map[LAN_ACCESS_USING_PPP] = "LAN Access Using PPP"
+        map[DUN_GW] = "DUN_GW"
+        map[OBEX_SYNC] = "OBEX_SYNC"
+        map[OBEX_OBJECT_PUSH] = "OBEX Object Push"
+        map[OBEX_FILE_TRANSFER] = "OBEX File Transfer"
+        map[IRMC_SYNC_COMMAND] = "IrMC Sync Command"
+        map[HSP_HS] = "HSP_HS"
+        map[CORDLESS_TELEPHONY] = "Cordless Telephony"
+        map[AUDIO_SOURCE] = "Audio Source"
+        map[AUDIO_SINK] = "Audio Sink"
+        map[AV_REMOTE_CONTROL_TARGET] = "AV Remote Control Target"
+        map[ADVANCED_AUDIO] = "ADVANCED_AUDIO"
+        map[AVRCP_REMOTE] = "AVRCP_REMOTE"
+        map[VIDEO_CONFERENCING] = "Video Conferencing"
+        map[INTERCOM] = "Intercom"
+        map[FAX] = "FAX"
+        map[HEADSET_PROFILE_HSP_AUDIO_GATEWAY] = "Headset Profile (HSP) - Audio Gateway"
+        map[WAP] = "WAP"
+        map[WAP_CLIENT] = "WAP Client"
+        map[PANU] = "PANU"
+        map[NAP] = "NAP"
+        map[GN] = "GN"
+        map[DIRECT_PRINTING] = "Direct Printing"
+        map[REFERENCE_PRINTING] = "Reference Printing"
+        map[IMAGING] = "Imaging"
+        map[IMAGING_RESPONDER] = "Imaging Responder"
+        map[IMAGING_AUTOMATIC_ARCHIVE] = "Imaging Automatic Archive"
+        map[IMAGING_REFERENCE_OBJECTS] = "Imaging Reference Objects"
+        map[HANDS_FREE_PROFILE_HFP] = "Hands Free Profile (HFP)"
+        map[HANDS_FREE_PROFILE_HFP_AUDIO_GATEWAY] = "Hands Free Profile (HFP) – Audio Gateway"
+        map[DIRECT_PRINTING_REFERENCE_OBJECTS] = "Direct Printing Reference Objects"
+        map[REFLECTED_UI] = "Reflected UI"
+        map[BASIC_PRINTING] = "Basic Printing"
+        map[PRINTING_STATUS] = "Printing Status"
+        map[HID] = "HID"
+        map[HARDCOPY_CABLE_REPLACEMENT] = "Hardcopy Cable Replacement"
+        map[HCR_PRINT] = "HCR Print"
+        map[HCR_SCAN] = "HCR Scan"
+        map[COMMON_ISDN_ACCESS] = "Common ISDN Access"
+        map[VIDEO_CONFERENCING_GATEWAY] = "Video Conferencing Gateway"
+        map[UDIMT] = "UDIMT"
+        map[UDITA] = "UDITA"
+        map[AUDIO_VIDEO] = "Audio Video"
+        map[SIM_ACCESS] = "SIM Access"
+        map[OBEX_PCE] = "OBEX PCE"
+        map[OBEX_PSE] = "OBEX PSE"
+        map[OBEX_PBAP] = "OBEX PBAP"
+        map[OBEX_MAS] = "OBEX MAS"
+        map[OBEX_MNS] = "OBEX MNS"
+        map[OBEX_MAP] = "OBEX MAP"
+        map[PNP] = "PNP"
+        map[GENERIC_NETWORKING] = "Generic Networking"
+        map[GENERIC_FILE_TRANSFER] = "Generic File Transfer"
+        map[GENERIC_AUDIO] = "Generic Audio"
+        map[GENERIC_TELEPHONY] = "Generic Telephony"
+        map[UPNP] = "UPNP"
+        map[UPNP_IP] = "UPNP IP"
+        map[ESDP_UPNP_IP_PAN] = "ESDP UPnP IP PAN"
+        map[ESDP_UPNP_IP_LAP] = "ESDP UPnP IP LAP"
+        map[ESDP_UPNP_L2CAP] = "ESDP Upnp L2CAP"
+        map[VIDEO_DISTRIBUTION_PROFILE_VDP_SOURCE] = "Video Distribution Profile (VDP) - Source"
+        map[VIDEO_DISTRIBUTION_PROFILE_VDP_SINK] = "Video Distribution Profile (VDP) - Sink"
+        map[VIDEO_DISTRIBUTION_PROFILE_VDP] = "Video Distribution Profile (VDP)"
+        map[HEALTH_DEVICE_PROFILE_HDP] = "Health Device Profile (HDP)"
+        map[HEALTH_DEVICE_PROFILE_HDP_SOURCE] = "Health Device Profile (HDP) - Source"
+        map[HEALTH_DEVICE_PROFILE_HDP_SINK] = "Health Device Profile (HDP) - Sink"
+        map[GAP] = "GAP"
+        map[GATT] = "GATT"
+        map[IMMEDIATE_ALERT] = "IMMEDIATE_ALERT"
+        map[LINK_LOSS] = "LINK_LOSS"
+        map[TX_POWER] = "TX_POWER"
+        map[HEALTH_THERMOMETER] = "Health Thermometer"
+        map[DEVICE_INFORMATION] = "Device Information"
+        map[HEART_RATE] = "HEART_RATE"
+        map[CYCLING_SC] = "CYCLING_SC"
+        map[CLIENT_CHARACTERISTIC_CONFIG] = "CLIENT_CHARACTERISTIC_CONFIG"
+        map[DEVICE_NAME] = "Device Name"
+        map[APPEARANCE] = "Appearance"
+        map[PERIPHERAL_PRIVACY_FLAG] = "Peripheral Privacy Flag"
+        map[RECONNECTION_ADDRESS] = "Reconnection Address"
+        map[PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS] = "Peripheral Preferred Connection Parameters"
+        map[SERVICE_CHANGED] = "Service Changed"
+        map[ALERT_LEVEL] = "Alert Level"
+        map[TX_POWER_LEVEL] = "Tx Power Level"
+        map[DATE_TIME] = "Date Time"
+        map[DAY_OF_WEEK] = "Day of Week"
+        map[DAY_DATE_TIME] = "Day Date Time"
+        map[EXACT_TIME_256] = "Exact Time 256"
+        map[DST_OFFSET] = "DST Offset"
+        map[TIME_ZONE] = "Time Zone"
+        map[LOCAL_TIME_INFORMATION] = "Local Time Information"
+        map[TIME_WITH_DST] = "Time with DST"
+        map[TIME_ACCURACY] = "Time Accuracy"
+        map[TIME_SOURCE] = "Time Source"
+        map[REFERENCE_TIME_INFORMATION] = "Reference Time Information"
+        map[TIME_UPDATE_CONTROL_POINT] = "Time Update Control Point"
+        map[TIME_UPDATE_STATE] = "Time Update State"
+        map[TEMPERATURE_MEASUREMENT] = "Temperature Measurement"
+        map[TEMPERATURE_TYPE] = "Temperature Type"
+        map[INTERMEDIATE_TEMPERATURE] = "Intermediate Temperature"
+        map[MEASUREMENT_INTERVAL] = "Measurement Interval"
+        map[SYSTEM_ID] = "System ID"
+        map[MODEL_NUMBER_STRING] = "Model Number String"
+        map[SERIAL_NUMBER_STRING] = "Serial Number String"
+        map[FIRMWARE_REVISION_STRING] = "Firmware Revision String"
+        map[HARDWARE_REVISION_STRING] = "Hardware Revision String"
+        map[SOFTWARE_REVISION_STRING] = "Software Revision String"
+        map[MANUFACTURER_NAME_STRING] = "Manufacturer Name String"
+        map[IEEE_1107320601_REGULATORY] = "IEEE 11073-20601 Regulatory"
+        map[CURRENT_TIME] = "Current Time"
+        map[BLOOD_PRESSURE_MEASUREMENT] = "Blood Pressure Measurement"
+        map[INTERMEDIATE_CUFF_PRESSURE] = "Intermediate Cuff Pressure"
+        map[HEART_RATE_MEASUREMENT] = "Heart Rate Measurement"
+        map[BODY_SENSOR_LOCATION] = "Body Sensor Location"
+        map[HEART_RATE_CONTROL_POINT] = "Heart Rate Control Point"
+        map[ALERT_STATUS] = "Alert Status"
+        map[RINGER_CONTROL_POINT] = "Ringer Control Point"
+        map[RINGER_SETTING] = "Ringer Setting"
+        map[ALERT_CATEGORY_ID_BIT_MASK] = "Alert Category ID Bit Mask"
+        map[ALERT_CATEGORY_ID] = "Alert Category ID"
+        map[ALERT_NOTIFICATION_CONTROL_POINT] = "Alert Notification Control Point"
+        map[UNREAD_ALERT_STATUS] = "Unread Alert Status"
+        map[NEW_ALERT] = "New Alert"
+        map[SUPPORTED_NEW_ALERT_CATEGORY] = "Supported New Alert Category"
+        map[SUPPORTED_UNREAD_ALERT_CATEGORY] = "Supported Unread Alert Category"
+        map[BLOOD_PRESSURE_FEATURE] = "Blood Pressure Feature"
+        map[PNPID] = "PNPID"
+        map[SC_CONTROL_POINT] = "SC_CONTROL_POINT"
+        map[CSC_MEASUREMENT] = "CSC_MEASUREMENT"
+        map[CSC_FEATURE] = "CSC_FEATURE"
+        map[SENSOR_LOCATION] = "SENSOR_LOCATION"
+        map[ACTIVESYNC] = "ActiveSync"
+        map[ESTIMOTE_SERVICE] = "Estimote Service"
+        map[ESTIMOTE_UUID] = "Estimote UUID"
+        map[ESTIMOTE_MAJOR] = "Estimote Major"
+        map[ESTIMOTE_MINOR] = "Estimote Minor"
+        map[ESTIMOTE_BATTERY] = "Estimote Battery"
+        map[ESTIMOTE_TEMPERATURE] = "Estimote Temperature"
+        map[ESTIMOTE_POWER] = "Estimote Power"
+        map[ESTIMOTE_ADVERTISING_INTERVAL] = "Estimote Advertising Interval"
+        map[ESTIMOTE_VERSION_SERVICE] = "Estimote Version Service"
+        map[ESTIMOTE_SOFTWARE_VERSION] = "Estimote Software Version"
+        map[ESTIMOTE_HARDWARE_VERSION] = "Estimote Hardware Version"
+        map[ESTIMOTE_AUTHENTICATION_SERVICE] = "Estimote Authentication Service"
+        map[ESTIMOTE_ADVERTISING_SEED] = "Estimote Advertising Seed"
+        map[ESTIMOTE_ADVERTISING_VECTOR] = "Estimote Advertising Vector"
         return map
     }
 }
+    
+        

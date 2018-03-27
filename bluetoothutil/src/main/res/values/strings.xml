@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">BluetoothUtil</string>
-    <string name="ble_not_supported">当前设备不支持蓝牙4.0功能</string>
-    <string name="get_ble_service_error">获取蓝牙服务失败</string>
-    <string name="open_ble_error">蓝牙打开失败,请检查当前设备蓝牙权限及功能</string>
-    <string name="error_bluetooth_not_supported">当前设备不支持蓝牙功能</string>
-    <string name="not_request_bluetooth_permission">未授予蓝牙权限</string>
+    <string name="ble_not_supported">The current device does not support the Bluetooth 4 function</string>
+    <string name="get_ble_service_error">Getting Bluetooth service failure</string>
+    <string name="open_ble_error">Bluetooth has failed to open, please check the current Bluetooth permissions and functions</string>
+    <string name="error_bluetooth_not_supported">The current device does not support Bluetooth</string>
+    <string name="not_request_bluetooth_permission">No Bluetooth permission is granted</string>
 </resources>

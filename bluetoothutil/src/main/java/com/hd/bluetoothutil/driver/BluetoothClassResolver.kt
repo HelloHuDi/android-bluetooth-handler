@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothClass
 
 /**
  * Created by hd on 2017/6/12 0008.
- * 蓝牙设备类别
+ * Bluetooth device category
  */
 object BluetoothClassResolver {
 

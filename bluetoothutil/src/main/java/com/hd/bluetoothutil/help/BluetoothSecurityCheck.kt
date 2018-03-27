@@ -30,7 +30,7 @@ class BluetoothSecurityCheck private constructor(private var context: Context, v
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
             bluetoothManager = this.context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         } else {
-            hint(NOT_BLUETOOTHMANAGER, R.string.get_ble_service_error)
+            hint(NOT_BLUETOOTH_MANAGER, R.string.get_ble_service_error)
             return null
         }
         return getBluetoothAdapter(deviceVersion, bluetoothManager)
@@ -128,15 +128,15 @@ class BluetoothSecurityCheck private constructor(private var context: Context, v
 
     companion object {
 
-        val NOT_SUPPORT_BLE_4 = -1
+        const val NOT_SUPPORT_BLE_4 = -1
 
-        val PERMISSION_NOT_GRANTED = -2
+        const val PERMISSION_NOT_GRANTED = -2
 
-        val OPEN_BLUETOOTH_FAILED = -3
+        const val OPEN_BLUETOOTH_FAILED = -3
 
-        val NOT_SUPPORT_BLUETOOTH = -4
+        const val NOT_SUPPORT_BLUETOOTH = -4
 
-        val NOT_BLUETOOTHMANAGER = -5
+        const val NOT_BLUETOOTH_MANAGER = -5
 
         fun newInstance(context: Context, callback: SecurityCheckCallback? = null): BluetoothSecurityCheck {
             return BluetoothSecurityCheck(context.applicationContext, callback)

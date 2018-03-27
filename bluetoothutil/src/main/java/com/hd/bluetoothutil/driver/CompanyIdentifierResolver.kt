@@ -4,8 +4,9 @@ import android.util.SparseArray
 
 /**
  * Created by hd on 2017/6/12 0008.
- * 公司标识符
- * 参考：https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers
+ * company
+ * Reference resources ：
+ * https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers
  */
 object CompanyIdentifierResolver {
     val ERICSSON_TECHNOLOGY_LICENSING = 0x0000

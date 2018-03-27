@@ -11,7 +11,7 @@ import java.lang.reflect.Method
 
 /**
  * Created by hd on 2017/7/18.
- *
+ * connect device
  */
 class BluetoothConnector {
 
@@ -31,7 +31,7 @@ class BluetoothConnector {
     }
 
     /**
-     * 通过反射原理，发起蓝牙连接
+     * Initiating a Bluetooth connection by reflection principle
      */
     private fun connectBtBySco(mBluetoothDevice: BluetoothDevice, mBluetoothSocket: BluetoothSocket): Boolean {
         var bluetoothSocket = mBluetoothSocket
@@ -55,13 +55,14 @@ class BluetoothConnector {
             bluetoothSocket.connect()
             true
         } catch (e: IOException) {
-            BL.d("connectBtBySco connect error :" + e)
+            BL.d("connectBtBySco connect error :$e")
             false
         }
     }
 
     /**
-     * 通过反射原理，使用随机端口发起蓝牙连接
+     * Using the principle of reflection,
+     * using a random port to initiate a Bluetooth connection
      */
     private fun connectBtByChannel(ownDevice: BluetoothDevice, bluetoothSocket: BluetoothSocket): Boolean {
         var socket = bluetoothSocket
@@ -77,32 +78,29 @@ class BluetoothConnector {
         }
         if (method != null) {
             try {
-                socket = method.invoke(ownDevice, port) as BluetoothSocket//1-30端口
+                socket = method.invoke(ownDevice, port) as BluetoothSocket//1-30 port
             } catch (e: IllegalAccessException) {
                 e.printStackTrace()
             } catch (e: InvocationTargetException) {
                 e.printStackTrace()
             }
             return try {
-                socket.connect()//发起连接
+                socket.connect()
                 true
             } catch (e: IOException) {
-                BL.d("connectBtByChannel connect error :" + e)
+                BL.d("connectBtByChannel connect error :$e")
                 false
             }
         }
         return false
     }
 
-    /**
-     * 使用UUID发起蓝牙连接
-     */
     private fun connectSocketByUUID(bluetoothSocket: BluetoothSocket): Boolean {
         return try {
             bluetoothSocket.connect()
             true
         } catch (e: IOException) {
-            BL.d("connectSocketByUUID connect error :" + e)
+            BL.d("connectSocketByUUID connect error :$e")
             false
         }
 

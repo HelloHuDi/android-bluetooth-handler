@@ -12,7 +12,7 @@ import com.hd.bluetoothutil.utils.BL
 
 /**
  * Created by hd on 2017/12/10 .
- *
+ * base scanner
  */
 abstract class BluetoothBaseScanner {
 

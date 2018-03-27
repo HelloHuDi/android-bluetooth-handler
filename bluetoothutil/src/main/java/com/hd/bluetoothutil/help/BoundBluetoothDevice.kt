@@ -37,11 +37,25 @@ class BoundBluetoothDevice constructor(val context: Context) : BleBoundProgressC
 
     /** query single device bound status*/
     fun queryBoundStatus(entity: BluetoothDeviceEntity): Boolean {
-        if (entity.version == DeviceVersion.BLUETOOTH_4) return true
+        return queryBoundStatus(arrayOf(entity))[0]!!
+    }
+
+    /** query multiple device bound status*/
+    fun queryBoundStatus(entities: Array<BluetoothDeviceEntity>): Array<Boolean?> {
+        val status= arrayOfNulls<Boolean>(entities.size)
         val devices = bluetoothAdapter?.bondedDevices
-        if (devices != null && devices.isNotEmpty())
-            devices.filter { BluetoothSecurityCheck.newInstance(context).checkSameDevice(it, entity) }.forEach { return true }
-        return false
+        if (devices != null && devices.isNotEmpty()){
+            for(device in devices){
+                for(index in entities.indices){
+                    if(entities[index].version == DeviceVersion.BLUETOOTH_4){
+                        status[index] = true
+                    }else {
+                        status[index] = BluetoothSecurityCheck.newInstance(context).checkSameDevice(device, entities[index])
+                    }
+                }
+            }
+        }
+        return status
     }
 
     private val boundMap = linkedMapOf<BluetoothDevice, Boolean>()

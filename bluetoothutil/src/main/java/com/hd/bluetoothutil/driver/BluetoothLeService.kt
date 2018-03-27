@@ -35,7 +35,7 @@ class BluetoothLeService : Service() {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 broadcastUpdate(ACTION_GATT_CONNECTED, null)
                 val discoverServices = mBluetoothGatt!!.discoverServices()
-                BL.d("onConnectionStateChange STATE_CONNECTED :" + discoverServices)
+                BL.d("onConnectionStateChange STATE_CONNECTED :$discoverServices")
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 BL.d("onConnectionStateChange STATE_DISCONNECTED")
                 broadcastUpdate(ACTION_GATT_DISCONNECTED, null)
@@ -118,7 +118,6 @@ class BluetoothLeService : Service() {
                 }
             }
         } else if (UUID_HEART_RATE_MEASUREMENT == characteristic.uuid) {
-            // 这是心率测量配置文件。
             val flag = characteristic.properties
             val format = if (flag and 0x01 != 0) {
                 BluetoothGattCharacteristic.FORMAT_UINT16
@@ -126,7 +125,7 @@ class BluetoothLeService : Service() {
                 BluetoothGattCharacteristic.FORMAT_UINT8
             }
             val heartRate = characteristic.getIntValue(format, 1)!!
-            BL.d("result ：" + heartRate)
+            BL.d("result ：$heartRate")
             intent.putExtra(EXTRA_DATA, intToBytes(heartRate))
             sendBroadcast(intent)
         } else {
@@ -206,7 +205,7 @@ class BluetoothLeService : Service() {
         BL.d("Trying to create a new connection.")
         mBluetoothDeviceAddress = address
         val refresh = refreshDeviceCache(mBluetoothGatt)
-        BL.d("refresh device ：" + refresh)
+        BL.d("refresh device ：$refresh")
         return true
     }
 
@@ -365,37 +364,13 @@ class BluetoothLeService : Service() {
     }
 
     companion object {
-        /**
-         * 蓝牙连接状态
-         */
         val ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED"
-        /**
-         * 蓝牙断开状态
-         */
         val ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED"
-        /**
-         * 蓝牙服务被发现
-         */
         val ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
-        /**
-         * 数据被读取
-         */
         val ACTION_DATA_BE_READ = "com.example.bluetooth.le.ACTION_DATA_BE_READ"
-        /**
-         * 数据被写入
-         */
         val ACTION_DATA_BE_WRITE = "com.example.bluetooth.le.ACTION_DATA_BE_WRITE"
-        /**
-         * 数据被更新
-         */
         val ACTION_DATA_BE_UPDATATED = "com.example.bluetooth.le.ACTION_DATA_BE_UPDATATED"
-        /**
-         * 接收蓝牙结果
-         */
         val EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA"
-        /**
-         * 蓝牙心率解析uuid
-         */
         val UUID_HEART_RATE_MEASUREMENT = UUID.fromString(GattAttributeResolver.HEART_RATE_MEASUREMENT)!!
         val UUID_CHARACTER_RECEIVE = UUID.fromString(GattAttributeResolver.CHARACTER_RECEIVE)!!
         val UUID_CLIENT_CHARACTER_CONFIG = UUID.fromString(GattAttributeResolver.CLIENT_CHARACTERISTIC_CONFIG)!!
