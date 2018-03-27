@@ -43,14 +43,17 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
     }
 
     override fun stopScan() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mBluetoothLeScanner != null) {
-            BL.d("$mBluetoothLeScanner=$mScanCallback")
-            mBluetoothLeScanner?.stopScan(mScanCallback)
-        } else {
-            bluetoothAdapter!!.stopLeScan(leScanCallback)
+        if (bluetoothAdapter!!.isEnabled) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mBluetoothLeScanner != null) {
+                BL.d("$mBluetoothLeScanner=$mScanCallback")
+                mBluetoothLeScanner?.stopScan(mScanCallback)
+            } else {
+                bluetoothAdapter!!.stopLeScan(leScanCallback)
+            }
         }
         handler.removeCallbacks(stopRunnable)
         scanComplete()
+        release()
     }
 
     private val leScanCallback = BluetoothAdapter.LeScanCallback { bluetoothDevice, _, _ ->
@@ -73,7 +76,7 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            BL.d("scan failed :" + errorCode)
+            BL.d("scan failed :$errorCode")
             terminationScan()
         }
     }

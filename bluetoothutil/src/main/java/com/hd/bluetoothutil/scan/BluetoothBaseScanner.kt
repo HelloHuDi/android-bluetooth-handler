@@ -37,6 +37,14 @@ abstract class BluetoothBaseScanner {
         status = BleMeasureStatus.STOPPING
         stopScan()
         status = BleMeasureStatus.STOPPED
+        release()
+    }
+
+    fun release(){
+        bluetoothAdapter=null
+        context=null
+        callback=null
+        status=BleMeasureStatus.PREPARE
     }
 
     protected fun scanComplete(device: BluetoothDevice? = null) {

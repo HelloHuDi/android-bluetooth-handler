@@ -110,7 +110,7 @@ class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                     if (status === BleMeasureStatus.RUNNING && mbluetoothLeService != null && entity.reconnected) {
                         //try reconnect if the equipment is disconnected at during operation
                         val connectStatus = mbluetoothLeService!!.connect(targetDevice!!.address)
-                        BL.d("connect again :" + connectStatus)
+                        BL.d("connect again :$connectStatus")
                         callback.connectStatus(connectStatus)
                     } else {
                         BL.d("device disconnect ")

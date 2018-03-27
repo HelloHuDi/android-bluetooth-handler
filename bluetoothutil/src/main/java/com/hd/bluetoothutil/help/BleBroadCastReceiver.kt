@@ -32,8 +32,6 @@ class BleBroadCastReceiver : BroadcastReceiver() {
             BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
                 val device = intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
                 callback.actionBondStateChanged(device)
-                if (device.bondState == BluetoothDevice.BOND_BONDED)
-                    callback.actionDiscoveryFinished()
             }
             BluetoothAdapter.ACTION_STATE_CHANGED -> {
                 val extraState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
@@ -122,6 +120,7 @@ class BleBroadCastReceiver : BroadcastReceiver() {
         fun clear() {
             BL.d("broad cast receiver clear callback")
             callbackList = null
+            pairArray=null
             searchComplete.set(false)
         }
     }

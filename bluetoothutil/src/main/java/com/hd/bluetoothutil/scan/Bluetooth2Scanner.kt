@@ -20,8 +20,14 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
     }
 
     override fun stopScan() {
-        if (bluetoothAdapter!!.isDiscovering) bluetoothAdapter!!.cancelDiscovery()
+        cancelDiscovery()
         scanComplete()
+        release()
+    }
+
+    private fun cancelDiscovery() {
+        if (bluetoothAdapter!!.isDiscovering && bluetoothAdapter!!.isEnabled)
+            bluetoothAdapter!!.cancelDiscovery()
     }
 
     /** querying native devices that have been bound */
@@ -37,10 +43,9 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
     }
 
     /** querying nearby devices ，bound device if the device is scanned*/
-
     private fun searchNearbyDevice() {
-        BL.d("start search nearby device")
-        BoundBluetoothDevice.newInstance(context!!).boundDevice(entity!!, object : BleBoundStatusCallback {
+        BL.d("start search nearby device ")
+        BoundBluetoothDevice.newInstance(context!!)!!.boundDevice(entity!!, object : BleBoundStatusCallback {
             override fun boundStatus(discoveryFinished: Boolean, boundMap: LinkedHashMap<BluetoothDevice, Boolean>) {
                 if (continueScan())
                     if (!discoveryFinished) {
@@ -60,6 +65,7 @@ class Bluetooth2Scanner : BluetoothBaseScanner() {
                     }
             }
         })
-        bluetoothAdapter!!.startDiscovery()
+        cancelDiscovery()
+        BL.d("start discovery: " + bluetoothAdapter!!.startDiscovery())
     }
 }

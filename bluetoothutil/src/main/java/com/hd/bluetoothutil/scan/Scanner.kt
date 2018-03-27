@@ -24,19 +24,23 @@ object Scanner {
         if (adapter == null) {
             callback.scan(true)
         } else {
-            scan = if (entity.version == DeviceVersion.BLUETOOTH_2) {
-                Bluetooth2Scanner()
+            if (adapter.isEnabled) {
+                scan = if (entity.version == DeviceVersion.BLUETOOTH_2) {
+                    Bluetooth2Scanner()
+                } else {
+                    Bluetooth4Scanner()
+                }
+                scan?.init(context, adapter, entity, callback)
+                scan?.startScan()
             } else {
-                Bluetooth4Scanner()
+                callback.scan(true, null)
             }
-            scan?.init(context, adapter, entity, callback)
-            scan?.startScan()
         }
     }
 
     fun stopScan() {
         scan?.terminationScan()
-        scan=null
+        scan = null
     }
 
 }

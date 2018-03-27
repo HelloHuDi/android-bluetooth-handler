@@ -41,14 +41,14 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
         try {
             inputStream?.close()
         } catch (e: IOException) {
-            BL.d("inputStream close error :" + e)
+            BL.d("inputStream close error :$e")
         } finally {
             inputStream = null
         }
         try {
             outputStream?.close()
         } catch (e: IOException) {
-            BL.d("outputStream close error :" + e)
+            BL.d("outputStream close error :$e")
         } finally {
             outputStream = null
         }
@@ -64,20 +64,24 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 bluetoothSocket!!.close()
             }
         } catch (e: IOException) {
-            BL.d("bluetoothSocket close error :" + e)
+            BL.d("bluetoothSocket close error :$e")
         }
     }
 
     override fun startConnect() {
         BL.d("start connect device : $targetDevice + ${targetDevice!!.bondState}")
         if (targetDevice!!.bondState != BluetoothDevice.BOND_BONDED) {
-            callback.boundStatus(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 /** manual binding*/
                 BL.d("manual binding")
                 if (targetDevice!!.createBond()) {
+                    callback.boundStatus(true)
                     Thread(ConnectRunnable(targetDevice!!)).start()
+                } else {
+                    callback.boundStatus(false)
                 }
+            } else {
+                callback.boundStatus(false)
             }
         } else {
             callback.boundStatus(true)
@@ -96,7 +100,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             try {
                 bluetoothSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(GattAttributeResolver.SPP))
             } catch (e: IOException) {
-                BL.d("createRfcommSocketToServiceRecord error :" + e)
+                BL.d("createRfcommSocketToServiceRecord error :$e")
             }
             if (bluetoothSocket == null) {
                 BL.d("connect error ,the bluetoothSocket is null ")
@@ -104,7 +108,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 return
             }
             callback.startConnect()
-            socketConnect=false
+            socketConnect = false
             try {
                 if (!BluetoothConnector.newInstance().connectSocket(device, bluetoothSocket!!)) {
                     BL.d("connect again time ：$reconnected_number=$status")
@@ -118,16 +122,16 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 reconnected()
                 return
             }
-            socketConnect=true
+            socketConnect = true
             try {
                 inputStream = bluetoothSocket!!.inputStream
             } catch (e: IOException) {
-                BL.d("bluetoothSocket inputStream error :" + e)
+                BL.d("bluetoothSocket inputStream error :$e")
             }
             try {
                 outputStream = bluetoothSocket!!.outputStream
             } catch (e: IOException) {
-                BL.d("bluetoothSocket outputStream error :" + e)
+                BL.d("bluetoothSocket outputStream error :$e")
             }
             callback.startRead()
             reconnected_number = default_reconnected_number
@@ -143,7 +147,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                 try {
                     (callback as MeasureBle2ProgressCallback).write(outputStream!!)
                 } catch (ignored: Exception) {
-                    BL.d("write data error ：" + ignored)
+                    BL.d("write data error ：$ignored")
                 }
                 val len: Int
                 try {
@@ -174,7 +178,7 @@ class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
             if (status == BleMeasureStatus.RUNNING)
                 if (reconnected_number > 0 && entity.reconnected) {
                     reconnected_number--
-                    BL.d("reconnected:" + reconnected_number)
+                    BL.d("reconnected:$reconnected_number")
                     closeSocket()
                     SystemClock.sleep(200)
                     run()

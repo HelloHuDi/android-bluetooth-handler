@@ -49,6 +49,7 @@ abstract class BluetoothHandler(val context: Context, val entity: BluetoothDevic
     fun stopMeasure() {
         if (status == BleMeasureStatus.RUNNING) {
             status = BleMeasureStatus.STOPPING
+            Scanner.stopScan()
             release()
             status = BleMeasureStatus.STOPPED
         }
