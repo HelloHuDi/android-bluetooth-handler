@@ -16,6 +16,7 @@ import com.hd.practice.BuildConfig
 import com.hd.practice.HexDump
 import java.io.OutputStream
 import java.util.*
+import kotlin.concurrent.thread
 
 
 /**
@@ -37,36 +38,36 @@ abstract class MeasureHandler(private val context: Context, private val tv: Text
 
     protected var closeData: ByteArray? = null
 
-    protected var reading=false
+    protected var reading = false
 
     var deviceName: String? = null
 
     open fun start() {
-        //main thread
-        BluetoothController.init(context = context, entity = entity, device = null, callback = MeasureHandler@ this).startMeasure()
-        reading=false
+        thread {
+            BluetoothController.init(context = context, entity = entity, device = null, callback = MeasureHandler@ this).startMeasure()
+        }
+        reading = false
     }
 
     open fun stop() {
-        reading=false
-        if (closeData!=null) {
+        reading = false
+        if (closeData != null) {
             writeData(closeData!!)
             SystemClock.sleep(1000)
         }
         BluetoothController.stopMeasure()
     }
 
-    open fun writeData(data: ByteArray) {
-
-    }
+    open fun writeData(data: ByteArray) {}
 
     private fun showResult(msg: String) {
-        (context as Activity).runOnUiThread {
-            tv.append(msg)
-            sv.post({
-                sv.fullScroll(ScrollView.FOCUS_DOWN)
-            })
-        }
+        if (!(context as Activity).isDestroyed)
+            context.runOnUiThread {
+                tv.append(msg)
+                sv.post({
+                    sv.fullScroll(ScrollView.FOCUS_DOWN)
+                })
+            }
         BL.d("showResult==$msg")
     }
 
@@ -100,7 +101,7 @@ abstract class MeasureHandler(private val context: Context, private val tv: Text
     }
 
     override fun reading(data: ByteArray) {
-        reading=true
+        reading = true
         BL.d(" reading hex data :" + HexDump.toHexString(data))
         showResult("==>receive data :${Arrays.toString(data)} \n")
     }

@@ -29,10 +29,10 @@ task clean(type: Delete) {
 }
 
 ext {
-    android_compileSdkVersion = 26
+    android_compileSdkVersion = 27
     android_buildToolsVersion = '27.0.2'
     android_minSdkVersion = 18
-    android_targetSdkVersion = 26
+    android_targetSdkVersion = 27
     lib_recyclerview ='com.android.support:recyclerview-v7:26.1.0'
     lib_appcompat = 'com.android.support:appcompat-v7:26.1.0'
     lib_design = 'com.android.support:design:26.1.0'

@@ -9,13 +9,15 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
-import com.hd.practice.handler.MeasureYCHandler
+import com.hd.practice.handler.MeasureBF4030Handler
 import kotlinx.android.synthetic.main.activity_main.*
+
+
 
 class MainActivity : AppCompatActivity() {
 
     // test device handler
-    private val measureHandler by lazy { MeasureYCHandler(this, tvResult, svResult) }
+    private val measureHandler by lazy { MeasureBF4030Handler(this, tvResult, svResult) }
 
     private val REQUEST_CODE = 10086
 
@@ -29,8 +31,8 @@ class MainActivity : AppCompatActivity() {
         checkPermissionGranted()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         stop()
     }
 
