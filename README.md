@@ -3,17 +3,17 @@
 </p>
 <h3 align="center">android bluetooth handler </h3>
 <p align="center">
-<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/release-v1.3.3-blue.svg"></img></a>
-<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/demo-v1.3.3-blue.svg"></img></a>
+<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/release-v1.4.0-blue.svg"></img></a>
+<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/demo-v1.4.0-blue.svg"></img></a>
 </p>
 
-## provided Bluetooth 2 and 4 working handler of under Android , and Bluetooth 2 achieves automatic binding
+## **provided Bluetooth 2 and 4 working handler of under Android , and Bluetooth 2 achieves automatic binding**
 
-### support android sdk version 18+
+### **support android sdk version 18+**
 
-## [bluetooth debug tool project](https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/abluetoothtools)
+## [**abluetoothtools**](https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/abluetoothtools) : bluetooth debug tool project,[download](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk) the bluetooth debug tool apk
 
-## [download bluetooth debug tool apk](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk)
+## [**practice**](https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/practice) : practice device project
 
 ## [google 4.0 demo project](https://github.com/googlesamples/android-BluetoothLeGatt)
 
@@ -21,43 +21,58 @@
 
 <img src="art/bluetooth4.png" width="300px" height="500px"/> <img src="art/bluetooth2.png" width="300px" height="500px"/>
 
-### use：
+### **use**：
 
 ```
- compile 'com.hd:bluetoothutil:1.3.3'
+dependencies {
+    ...
+    compile 'com.hd:bluetoothutil:1.4.0'
+}
 ```
 
-### start scan device:
+### **start scan device**
 
 ```
 Scanner.scan(Context, BluetoothAdapter?, BluetoothDeviceEntity, ScannerCallback)
 ```
 
-### stop scan device:
+### **stop scan device**
 
 ```
 Scanner.stopScan()
 ```
 
-### start measure
+### **query binding state(4.0 default return to true)**
+
+```
+BoundBluetoothDevice.newInstance(context).queryBoundStatus(BluetoothDeviceEntity)
+```
+
+### **binding device**
+
+```
+BoundBluetoothDevice.newInstance(context).boundDevice(BluetoothDeviceEntity, BleBoundStatusCallback, ScannerCallback?)
+```
+
+### **start measure**
 
 ```
 BluetoothController.init(Context,BluetoothDeviceEntity,BluetoothDevice?,MeasureProgressCallback).startMeasure()
 ```
 
-### stop measure
+### **stop measure**
 
 ```
 BluetoothController.stopMeasure()
 ```
 
-### open the print function
+### **open the print function,default not print**
 
 ```
 BL.allowLog=BuildConfig.DEBUG
 ```
 
-### BluetoothDeviceEntity：
+### **BluetoothDeviceEntity：**
 
 name                      | attribute   | function
 -------------------------|-------|----
@@ -67,3 +82,21 @@ pin                      | String   | Paired pin code (for bluetooth 2.0 device)
 targetCharacteristicUuid | UUID   | Focus on reading and writing special effects for BluetoothGattCharacteristic
 reconnected              | Boolean   | If there is a failure in the equipment work, if you need to reconnect, the default false
 version                  | DeviceVersion   |Target Bluetooth device version (2.0 and 4.0) 
+
+
+License
+=======
+
+    Copyright 2017 HelloHuDi, Inc.
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+       http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
