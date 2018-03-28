@@ -91,7 +91,7 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
         if (status == BleMeasureStatus.RUNNING) stopMeasure()
         status = BleMeasureStatus.RUNNING
         tvResult.text = ""
-        showResult("==>$entity")
+        showResult("==>$entity\n")
         snack(R.string.start_measure)
         initWriteThread()
         thread { BluetoothController.init(activity.applicationContext, entity, device, callback).startMeasure() }
@@ -136,7 +136,7 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
                         }
                     }
                 } catch (e: Exception) {
-                    BL.d("write data error :" + e)
+                    BL.d("write data error :$e")
                 }
             }
         }
@@ -151,7 +151,7 @@ abstract class MeasureFragment : Fragment(), MeasureProgressCallback {
                 sv.fullScroll(ScrollView.FOCUS_DOWN)
             })
         }
-        BL.d("showResult==" + msg)
+        BL.d("showResult==$msg")
     }
 
     private fun snack(@StringRes strId: Int) {

@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.ChoosePatternActivity"
+            android:name=".view.ScanDeviceActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
