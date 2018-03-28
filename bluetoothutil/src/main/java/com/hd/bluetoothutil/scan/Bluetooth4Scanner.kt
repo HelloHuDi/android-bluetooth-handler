@@ -6,6 +6,7 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.utils.BL
@@ -19,7 +20,7 @@ class Bluetooth4Scanner : BluetoothBaseScanner() {
 
     private var mBluetoothLeScanner: BluetoothLeScanner? = null
 
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
 
     private val stopRunnable = stopRunnable()
 

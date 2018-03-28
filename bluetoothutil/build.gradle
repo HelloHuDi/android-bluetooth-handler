@@ -7,7 +7,7 @@ def siteUrl = 'https://github.com/HelloHuDi/android-bluetooth-handler'
 def gitUrl = 'git@github.com:HelloHuDi/android-bluetooth-handler.git'
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-version = "1.3.3"
+version = "1.4.0"
 group = "com.hd"
 android {
     compileSdkVersion rootProject.android_compileSdkVersion
@@ -15,8 +15,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.android_minSdkVersion
         targetSdkVersion rootProject.android_targetSdkVersion
-        versionCode 133
-        versionName "1.3.3"
+        versionCode 140
+        versionName "1.4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
