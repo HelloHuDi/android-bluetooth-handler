@@ -13,7 +13,6 @@ import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.driver.BluetoothLeService
 import com.hd.bluetoothutil.utils.BL
 import com.hd.practice.BuildConfig
-import com.hd.practice.HexDump
 import java.io.OutputStream
 import java.util.*
 import kotlin.concurrent.thread
@@ -46,6 +45,7 @@ abstract class MeasureHandler(private val context: Context, private val tv: Text
         thread {
             BluetoothController.init(context = context, entity = entity, device = null, callback = MeasureHandler@ this).startMeasure()
         }
+        showResult("measure entity==> $entity \n")
         reading = false
     }
 
@@ -102,7 +102,6 @@ abstract class MeasureHandler(private val context: Context, private val tv: Text
 
     override fun reading(data: ByteArray) {
         reading = true
-        BL.d(" reading hex data :" + HexDump.toHexString(data))
         showResult("==>receive data :${Arrays.toString(data)} \n")
     }
 

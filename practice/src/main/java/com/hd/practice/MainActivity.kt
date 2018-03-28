@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         if (permission_granted) {
             measureHandler.start()
         }else {
-            Toast.makeText(this,"权限被拒绝",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,resources.getString(R.string.not_request_bluetooth_permission),Toast.LENGTH_SHORT).show()
         }
     }
 

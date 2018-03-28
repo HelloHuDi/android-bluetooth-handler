@@ -15,14 +15,9 @@ import kotlin.concurrent.thread
  */
 class MeasureYCHandler(context: Context, tv: TextView, sv: ScrollView) : Measure2Handler(context, tv, sv) {
 
-    /**
-     * 无条件搜索设备
-     */
-    private val search_device = byteArrayOf(0x4F.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0x02.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xB2.toByte())
-    /**
-     * 向设备发送已经准备就绪命令
-     */
-    private val connect_device = byteArrayOf(0x4F.toByte(), 0x06.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0x03.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFE.toByte(), 0xB4.toByte())
+    private val searchDevice = byteArrayOf(0x4F.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0x02.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xB2.toByte())
+
+    private val connectDevice = byteArrayOf(0x4F.toByte(), 0x06.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0x03.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFE.toByte(), 0xB4.toByte())
 
     init {
         deviceName="yicheng"
@@ -36,9 +31,9 @@ class MeasureYCHandler(context: Context, tv: TextView, sv: ScrollView) : Measure
         thread {
             while (!reading) {
                 count++
-                writeData(search_device)
+                writeData(searchDevice)
                 SystemClock.sleep(100)
-                writeData(connect_device)
+                writeData(connectDevice)
                 BL.d("write data to device :$count")
             }
         }
