@@ -21,12 +21,14 @@
 
 <img src="art/bluetooth4.png" width="300px" height="500px"/> <img src="art/bluetooth2.png" width="300px" height="500px"/>
 
-### **use**：
+### **The following is the kotlin usage**
+
+### **usage**：
 
 ```
 dependencies {
-    ...
-    compile 'com.hd:bluetoothutil:1.4.0'
+    //...
+    implementation 'com.hd:bluetoothutil:1.4.0'
 }
 ```
 
