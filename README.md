@@ -21,8 +21,6 @@
 
 <img src="art/bluetooth4.png" width="300px" height="500px"/> <img src="art/bluetooth2.png" width="300px" height="500px"/>
 
-### **The following is the kotlin usage**
-
 ### **usage**：
 
 ```
@@ -35,43 +33,71 @@ dependencies {
 ### **start scan device**
 
 ```
-Scanner.scan(Context, BluetoothAdapter?, BluetoothDeviceEntity, ScannerCallback)
+//kotlin 
+Scanner.scan()
+
+//java 
+Scanner.INSTANCE.scan();
 ```
 
 ### **stop scan device**
 
 ```
+//kotlin
 Scanner.stopScan()
+
+//java 
+Scanner.INSTANCE.stopScan();
 ```
 
 ### **query binding state(4.0 default return to true)**
 
 ```
-BoundBluetoothDevice.newInstance(context).queryBoundStatus(BluetoothDeviceEntity)
+//kotlin
+BoundBluetoothDevice.newInstance(context).queryBoundStatus()
+
+//java
+BoundBluetoothDevice.Companion.newInstance(context).queryBoundStatus();
 ```
 
 ### **binding device**
 
 ```
-BoundBluetoothDevice.newInstance(context).boundDevice(BluetoothDeviceEntity, BleBoundStatusCallback, ScannerCallback?)
+//kotlin
+BoundBluetoothDevice.newInstance(context).boundDevice()
+
+//java
+BoundBluetoothDevice.Companion.newInstance(context).boundDevice();
 ```
 
 ### **start measure**
 
 ```
-BluetoothController.init(Context,BluetoothDeviceEntity,BluetoothDevice?,MeasureProgressCallback).startMeasure()
+//kotlin
+BluetoothController.init().startMeasure()
+
+//java 
+BluetoothController.INSTANCE.init().startMeasure();
 ```
 
 ### **stop measure**
 
 ```
+//kotlin
 BluetoothController.stopMeasure()
+
+//java 
+BluetoothController.INSTANCE.stopMeasure();
 ```
 
 ### **open the print function,default not print**
 
 ```
+//kotlin
 BL.allowLog=BuildConfig.DEBUG
+
+//java
+BL.INSTANCE.setAllowLog(BuildConfig.DEBUG);
 ```
 
 ### **BluetoothDeviceEntity：**
