@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.Build
 import android.os.SystemClock
+import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
@@ -21,6 +22,7 @@ import java.util.*
  * Created by hd on 2017/9/1 .
  *
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class Bluetooth2Handler(context: Context, entity: BluetoothDeviceEntity,
                         bluetoothAdapter: BluetoothAdapter, callback: MeasureBle2ProgressCallback)
     : BluetoothHandler(context, entity, bluetoothAdapter, callback) {

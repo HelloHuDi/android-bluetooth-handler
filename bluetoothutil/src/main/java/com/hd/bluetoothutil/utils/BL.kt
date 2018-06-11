@@ -27,27 +27,23 @@ object BL {
     }
 
     fun i(tag: String?, i: String) {
-        if (allowLog) {
-            Log.i(tag ?: TAG, i)
-        }
+        print { Log.i(tag ?: TAG, i) }
     }
 
     fun d(tag: String?, d: String) {
-        if (allowLog) {
-            Log.d(tag ?: TAG, d)
-        }
+        print { Log.d(tag ?: TAG, d) }
     }
 
     fun w(tag: String?, w: String) {
-        if (allowLog) {
-            Log.w(tag ?: TAG, w)
-        }
+        print { Log.w(tag ?: TAG, w) }
     }
 
     fun e(tag: String?, e: String) {
-        if (allowLog) {
-            Log.e(tag ?: TAG, e)
-        }
+        print { Log.e(tag ?: TAG, e) }
+    }
+
+    private inline fun print(log: () -> Unit) {
+        if (allowLog) log()
     }
 
 }

@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.IntentFilter
 import android.os.Build
+import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.BleBoundProgressCallback
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.callback.ScannerCallback
@@ -18,6 +19,7 @@ import com.hd.bluetoothutil.utils.BL
  * Created by hd on 2017/9/1 .
  * bound bluetooth device
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class BoundBluetoothDevice constructor(val context: Context) : BleBoundProgressCallback {
 
     companion object {

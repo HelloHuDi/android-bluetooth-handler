@@ -3,6 +3,8 @@ package com.hd.bluetoothutil.scan
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
+import android.os.Build
+import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.ScannerCallback
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.config.DeviceVersion
@@ -13,6 +15,7 @@ import com.hd.bluetoothutil.help.BluetoothSecurityCheck
  * Created by hd on 2017/12/10 .
  * bluetooth device scanner
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 object Scanner {
 
     @SuppressLint("StaticFieldLeak")

@@ -3,6 +3,8 @@ package com.hd.bluetoothutil.driver
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.os.Build
+import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.MeasureProgressCallback
 import com.hd.bluetoothutil.callback.ScannerCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
@@ -18,6 +20,7 @@ import java.util.*
  * Created by hd on 2017/9/1 .
  * bluetooth handler
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 abstract class BluetoothHandler(val context: Context, val entity: BluetoothDeviceEntity,
                                 val bluetoothAdapter: BluetoothAdapter, val callback: MeasureProgressCallback)
     : ScannerCallback {

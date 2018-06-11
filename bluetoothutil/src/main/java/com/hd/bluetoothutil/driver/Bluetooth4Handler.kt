@@ -2,7 +2,9 @@ package com.hd.bluetoothutil.driver
 
 import android.bluetooth.BluetoothAdapter
 import android.content.*
+import android.os.Build
 import android.os.IBinder
+import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.callback.ScannerCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
@@ -14,6 +16,7 @@ import com.hd.bluetoothutil.utils.BL
  * Created by hd on 2017/9/1 .
  *
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class Bluetooth4Handler(context: Context, entity: BluetoothDeviceEntity,
                         bluetoothAdapter: BluetoothAdapter, callback: MeasureBle4ProgressCallback)
     : BluetoothHandler(context, entity, bluetoothAdapter, callback), ScannerCallback {

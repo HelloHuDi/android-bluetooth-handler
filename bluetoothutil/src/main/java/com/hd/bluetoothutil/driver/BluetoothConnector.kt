@@ -2,6 +2,8 @@ package com.hd.bluetoothutil.driver
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.os.Build
+import android.support.annotation.RequiresApi
 
 import com.hd.bluetoothutil.utils.BL
 
@@ -13,6 +15,7 @@ import java.lang.reflect.Method
  * Created by hd on 2017/7/18.
  * connect device
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class BluetoothConnector {
 
     private var port = 0

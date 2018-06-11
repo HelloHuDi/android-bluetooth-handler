@@ -5,7 +5,9 @@ import android.bluetooth.*
 import android.content.Context
 import android.content.Intent
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.config.BluetoothDeviceEntity
 import com.hd.bluetoothutil.utils.BL
@@ -17,6 +19,7 @@ import java.util.*
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class BluetoothLeService : Service() {
     private var mBluetoothAdapter: BluetoothAdapter? = null
     private var mBluetoothDeviceAddress: String? = null
@@ -364,13 +367,13 @@ class BluetoothLeService : Service() {
     }
 
     companion object {
-        val ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED"
-        val ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED"
-        val ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
-        val ACTION_DATA_BE_READ = "com.example.bluetooth.le.ACTION_DATA_BE_READ"
-        val ACTION_DATA_BE_WRITE = "com.example.bluetooth.le.ACTION_DATA_BE_WRITE"
-        val ACTION_DATA_BE_UPDATATED = "com.example.bluetooth.le.ACTION_DATA_BE_UPDATATED"
-        val EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA"
+        const val ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED"
+        const val ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED"
+        const val ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
+        const val ACTION_DATA_BE_READ = "com.example.bluetooth.le.ACTION_DATA_BE_READ"
+        const val ACTION_DATA_BE_WRITE = "com.example.bluetooth.le.ACTION_DATA_BE_WRITE"
+        const val ACTION_DATA_BE_UPDATATED = "com.example.bluetooth.le.ACTION_DATA_BE_UPDATATED"
+        const val EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA"
         val UUID_HEART_RATE_MEASUREMENT = UUID.fromString(GattAttributeResolver.HEART_RATE_MEASUREMENT)!!
         val UUID_CHARACTER_RECEIVE = UUID.fromString(GattAttributeResolver.CHARACTER_RECEIVE)!!
         val UUID_CLIENT_CHARACTER_CONFIG = UUID.fromString(GattAttributeResolver.CLIENT_CHARACTERISTIC_CONFIG)!!

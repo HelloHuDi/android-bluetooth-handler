@@ -1,6 +1,8 @@
 package com.hd.bluetoothutil.scan
 
 import android.bluetooth.BluetoothDevice
+import android.os.Build
+import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.BleBoundStatusCallback
 import com.hd.bluetoothutil.callback.ScannerCallback
 import com.hd.bluetoothutil.config.BleMeasureStatus
@@ -12,6 +14,7 @@ import com.hd.bluetoothutil.utils.BL
  * Created by hd on 2017/12/10 .
  * bluetooth 2.0 device scanner
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class Bluetooth2Scanner : BluetoothBaseScanner() {
 
     override fun startScan() {

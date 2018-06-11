@@ -16,6 +16,7 @@ import com.hd.bluetoothutil.utils.BL
  * Created by hd on 2017/12/10 .
  * bluetooth 4.0 device scanner
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class Bluetooth4Scanner : BluetoothBaseScanner() {
 
     private var mBluetoothLeScanner: BluetoothLeScanner? = null

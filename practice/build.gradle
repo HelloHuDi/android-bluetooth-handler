@@ -39,5 +39,5 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     testImplementation 'junit:junit:4.12'
 //  implementation project(':bluetoothutil')
-    implementation 'com.hd:bluetoothutil:1.4.0'
+    implementation 'com.hd:bluetoothutil:1.5.0'
 }

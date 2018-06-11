@@ -3,6 +3,8 @@ package com.hd.bluetoothutil
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.os.Build
+import android.support.annotation.RequiresApi
 import com.hd.bluetoothutil.callback.MeasureBle2ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureBle4ProgressCallback
 import com.hd.bluetoothutil.callback.MeasureProgressCallback
@@ -17,7 +19,9 @@ import com.hd.bluetoothutil.utils.BL
 /**
  * Created by hd on 2017/5/24.
  * control bluetooth handler
+ * API 18+
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 object BluetoothController {
 
     @SuppressLint("StaticFieldLeak")

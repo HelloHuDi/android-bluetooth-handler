@@ -3,19 +3,19 @@
 </p>
 <h3 align="center">android bluetooth handler </h3>
 <p align="center">
-<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/release-v1.4.0-blue.svg"></img></a>
-<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/demo-v1.4.0-blue.svg"></img></a>
+<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/release-v1.5.0-blue.svg"></img></a>
+<a href="https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk" target="_blank"><img src="https://img.shields.io/badge/demo-v1.5.0-blue.svg"></img></a>
 </p>
 
 ## **provided Bluetooth 2 and 4 working handler of under Android , and Bluetooth 2 achieves automatic binding**
 
 ### **support android sdk version 18+**
 
-## [**abluetoothtools**](https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/abluetoothtools) : bluetooth debug tool project,[download](https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk) the bluetooth debug tool apk
+## [**abluetoothtools**][1] : bluetooth debug tool project,[download][2] the bluetooth debug tool apk
 
-## [**practice**](https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/practice) : practice device project
+## [**practice**][3] : practice device project
 
-## [google 4.0 demo project](https://github.com/googlesamples/android-BluetoothLeGatt)
+## [google 4.0 demo project][4]
 
 ### screenshot
 
@@ -28,7 +28,7 @@
 ```
 dependencies {
     //...
-    implementation 'com.hd:bluetoothutil:1.4.0'
+    implementation 'com.hd:bluetoothutil:1.5.0'
 }
 ```
 
@@ -102,3 +102,9 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    
+
+[1]: https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/abluetoothtools
+[2]: https://raw.githubusercontent.com/HelloHuDi/android-bluetooth-handler/master/abluetoothtools/release/abluetoothtools-release.apk
+[3]: https://github.com/HelloHuDi/android-bluetooth-handler/tree/master/practice
+[4]: https://github.com/googlesamples/android-BluetoothLeGatt
